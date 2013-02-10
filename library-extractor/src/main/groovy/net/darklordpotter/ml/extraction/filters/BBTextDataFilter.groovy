@@ -1,6 +1,6 @@
-package com.darklordpotter.ml.filters
+package net.darklordpotter.ml.extraction.filters
 
-import com.darklordpotter.ml.DataFilter
+import net.darklordpotter.ml.extraction.DataFilter
 
 import java.util.regex.Matcher
 import java.util.regex.Pattern

@@ -1,7 +1,7 @@
-package com.darklordpotter.ml.extractors
+package net.darklordpotter.ml.extraction.extractors
 
-import com.darklordpotter.ml.DataExtractor
-import com.darklordpotter.ml.api.Story
+import net.darklordpotter.ml.extraction.DataExtractor
+import net.darklordpotter.ml.core.Story
 
 import java.util.regex.Matcher
 import java.util.regex.Pattern
@@ -17,7 +17,7 @@ class AuthorExtractor implements DataExtractor {
 
 
         if (m.find()) {
-            result.author = m.group(1).trim()
+            result.author = m.group(1).replaceAll("\\(([^\\)]+)\\)", "").trim()
         }
 
         result

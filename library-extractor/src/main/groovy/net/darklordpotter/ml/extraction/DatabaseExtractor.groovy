@@ -1,16 +1,21 @@
-package com.darklordpotter.ml
+package net.darklordpotter.ml.extraction
 
-import com.darklordpotter.ml.api.Story
-import com.darklordpotter.ml.extractors.AuthorExtractor
-import com.darklordpotter.ml.extractors.RatingExtractor
-import com.darklordpotter.ml.extractors.TitleExtractor
-import com.darklordpotter.ml.extractors.UrlExtractor
-import com.darklordpotter.ml.filters.BBTextDataFilter
+import com.google.common.base.Splitter
+import com.mongodb.BasicDBObject
+import net.darklordpotter.ml.core.Story
+import net.darklordpotter.ml.extraction.extractors.AuthorExtractor
+import net.darklordpotter.ml.extraction.extractors.RatingExtractor
+import net.darklordpotter.ml.extraction.extractors.SummaryExtractor
+import net.darklordpotter.ml.extraction.extractors.TitleExtractor
+import net.darklordpotter.ml.extraction.extractors.UrlExtractor
+import net.darklordpotter.ml.extraction.filters.BBTextDataFilter
 import com.mongodb.DB
 import com.mongodb.DBCollection
 import com.mongodb.MongoClient
 import groovy.sql.GroovyResultSet
 import groovy.sql.Sql
+import net.darklordpotter.ml.extraction.filters.QuoteDataFilter
+import net.darklordpotter.ml.extraction.utils.LevenshteinDistance
 import net.vz.mongodb.jackson.JacksonDBCollection
 
 /**
@@ -18,29 +23,38 @@ import net.vz.mongodb.jackson.JacksonDBCollection
  * @author Michael Rose <michael@fullcontact.com>
  */
 class DatabaseExtractor {
-    static final List<DataFilter> filters = [new BBTextDataFilter()]
+    static final List<DataFilter> filters = [new BBTextDataFilter(),new QuoteDataFilter()]
     static final List<DataExtractor> extractors = [
              new TitleExtractor()
             ,new AuthorExtractor()
             ,new RatingExtractor()
-            ,new UrlExtractor(StoryUrlPatterns.FFN.pattern)
-            ,new UrlExtractor(StoryUrlPatterns.PC.pattern)
+            ,new SummaryExtractor()
     ]
     static MongoClient client = new MongoClient("localhost")
     static DB db = client.getDB("dlp_library")
     static DBCollection collection = db.getCollection("stories")
     static JacksonDBCollection<Story, String> jacksonDBCollection = JacksonDBCollection.wrap(collection, Story, String)
+    static Map<String, Integer> cardinality = new HashMap<>().withDefault { k -> 0 }
 
     public static void main(String[] args) {
+        for (StoryUrlPattern urlPattern : StoryUrlPattern.values()) {
+            extractors.add(new UrlExtractor(urlPattern))
+        }
+
         Sql h = Sql.newInstance("jdbc:mysql://localhost/darklord_mainvb", "root", "")
         h.eachRow("""
 SELECT
-        post.pagetext, post.threadid, thread.title, thread.votenum, thread.votetotal, thread.replycount, thread.lastpost
+        post.pagetext, post.threadid, thread.title, thread.votenum, thread.votetotal, thread.replycount, thread.lastpost, forum.title as forumname,
+        GROUP_CONCAT(tag.tagtext) as tags
 FROM post
 LEFT JOIN thread
         USING (threadid)
 LEFT JOIN forum
         USING (forumid)
+LEFT JOIN tagthread
+        USING (threadid)
+LEFT JOIN tag
+        USING (tagid)
 WHERE thread.sticky = '0'
 AND thread.visible = '1'
 AND post.parentid = '0'
@@ -51,13 +65,24 @@ ORDER BY post.dateline ASC
     """) {
             insertNewRow(extractStoryInformation(it))
         }
+
+        cardinality.sort { it.value }.findAll { it.value > 1 }.each {
+            println it
+        }
+
+        List<String> names = cardinality.keySet().findAll { LevenshteinDistance.computeDistance(it, "Shezza 88") < 3 }.toList()
+        println names.collect {
+            cardinality.find { it2->it2.key == it }
+        }.sort{it.value}.last()
     }
 
     static void insertNewRow(Story result) {
-        jacksonDBCollection.update(result, result, true, false)
+        jacksonDBCollection.update(new Story(result.getThreadId()), result, true, false)
+        //collection.aggregate(new BasicDBObject("$match"))
     }
 
     static Story extractStoryInformation(GroovyResultSet resultSet) {
+
         println "${resultSet.title.replace('&#8216;', '')}"
 
         String pageText = resultSet.pagetext
@@ -70,10 +95,21 @@ ORDER BY post.dateline ASC
             result = extractor.apply(pageText, result)
         }
 
-        if (!result.title) result.title = resultSet.title.replace('&#8216;', '').replace(' - [a-zA-Z0-9]{1,4}', '')
+        if (!result.title) result.title = resultSet.title.replace('&#8216;', '').replace(' - [a-zA-Z0-9]{1,4}', '').replaceAll("â€™", "'")
 
+        result.threadRating = (double)resultSet.votetotal / resultSet.votenum
 
-        println result
+        if (resultSet.tags) {
+            List<String> tags = Splitter.on(",").trimResults().split(resultSet.tags) as List<String>
+
+            result.tags.addAll(tags)
+        }
+//        result.tags.addAll(
+//
+//        )
+
+        cardinality[result.author]++
+        //println result
         result
     }
 

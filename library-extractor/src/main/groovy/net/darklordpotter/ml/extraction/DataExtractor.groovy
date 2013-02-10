@@ -1,6 +1,6 @@
-package com.darklordpotter.ml
+package net.darklordpotter.ml.extraction
 
-import com.darklordpotter.ml.api.Story
+import net.darklordpotter.ml.core.Story
 
 /**
  * 2013-02-07

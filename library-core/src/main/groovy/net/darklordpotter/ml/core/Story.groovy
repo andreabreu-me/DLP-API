@@ -1,7 +1,4 @@
-package com.darklordpotter.ml.api
-
-import com.mongodb.BasicDBObject
-import com.mongodb.DBObject
+package net.darklordpotter.ml.core
 
 import javax.persistence.Id
 
@@ -10,20 +7,35 @@ import javax.persistence.Id
  * @author Michael Rose <michael@fullcontact.com>
  */
 public class Story {
-    private final Long threadId = 0
+    private Long threadId = 0
     String title = ""
     String author = ""
     String summary = ""
     Rating rating
-    List<String> url = []
+    Double threadRating = 0.0
+    Set<Url> url = [].toSet()
+    Set<String> tags = new HashSet<String>()
 
     Story(Long threadId) {
         this.threadId = threadId
     }
 
+
+    Story(String threadId) {
+        this.threadId = Long.parseLong(threadId)
+    }
+
+
+    Story() {}
+
     @Id
-    public String getMongoId() {
+    public String getThreadId() {
         return threadId.toString()
+    }
+
+    @Id
+    void setThreadId(String id) {
+        this.threadId = Long.parseLong(id)
     }
 
     @Override
@@ -34,7 +46,10 @@ public class Story {
         sb.append(", title='").append(title).append('\'');
         sb.append(", author='").append(author).append('\'');
         sb.append(", summary='").append(summary).append('\'');
+        sb.append(", rating=").append(rating);
+        sb.append(", threadRating=").append(threadRating);
         sb.append(", url=").append(url);
+        sb.append(", tags=").append(tags);
         sb.append('}');
         return sb.toString();
     }
