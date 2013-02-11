@@ -1,23 +1,20 @@
 package net.darklordpotter.ml.query.resources
 
-import com.mongodb.BasicDBObject
-import com.mongodb.DB
-import com.mongodb.DBCollection
-import com.mongodb.MongoClient
+import com.google.common.base.Splitter
+import com.mongodb.*
 import net.darklordpotter.ml.core.Story
 import net.vz.mongodb.jackson.DBQuery
 import net.vz.mongodb.jackson.JacksonDBCollection
 
-import javax.ws.rs.GET
-import javax.ws.rs.Path
-import javax.ws.rs.Produces
+import javax.ws.rs.*
 import javax.ws.rs.core.MediaType
+import javax.ws.rs.core.Response
 
 /**
  * 2013-02-09
  * @author Michael Rose <michael@fullcontact.com>
  */
-@Path("/story")
+@Path("/stories")
 @Produces(MediaType.APPLICATION_JSON)
 class StoryResource {
     static MongoClient client = new MongoClient("localhost")
@@ -26,10 +23,48 @@ class StoryResource {
     static JacksonDBCollection<Story, String> jacksonDBCollection = JacksonDBCollection.wrap(collection, Story, String)
 
     @GET
-    Iterator<Story> getAllStories() {
-        jacksonDBCollection.find(
-                DBQuery.greaterThanEquals("threadRating", 4.0d)).sort(
-                    new BasicDBObject( "_id" , -1 )
+    Iterator<Story> getAllStories(
+        @QueryParam("ratingThreshold") Double threshold,
+        @QueryParam("sortField") String sortField,
+        @QueryParam("sortDirection") String sortDirection
+    ) {
+
+        DBObject thresholdQuery = constructThresholdQuery(threshold)
+
+        jacksonDBCollection.find(thresholdQuery).sort(
+                    new BasicDBObject(sortField ?: 'title', translateSortToInt(sortDirection))
                 )
+    }
+
+    @GET
+    @Path("/{storyId}")
+    Story getStory(@PathParam("storyId") Long storyId) {
+        Story story = jacksonDBCollection.findOneById(storyId.toString())
+
+        if (!story) throw new WebApplicationException(Response.Status.NOT_FOUND)
+
+        story
+    }
+
+    @GET
+    @Path("/tagged/{tag}")
+    Iterator<Story> getTaggedStories(@PathParam("tag") String tags) {
+        Collection<String> tagList = Splitter.on(",").omitEmptyStrings().trimResults().split(tags).collect()
+        println tagList
+        jacksonDBCollection.find(DBQuery.all("tags", tagList)).sort(
+                new BasicDBObject("title",-1)
+        )
+    }
+
+    protected DBObject constructThresholdQuery(Double threshold) {
+        if (threshold) {
+            return DBQuery.greaterThanEquals("threadRating", threshold)
+        } else {
+            return new BasicDBObject()
+        }
+    }
+
+    protected int translateSortToInt(String sortDirection) {
+        sortDirection == "DESC" ? -1 : 1
     }
 }
