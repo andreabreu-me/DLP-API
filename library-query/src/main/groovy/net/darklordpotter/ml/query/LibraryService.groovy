@@ -21,7 +21,7 @@ class LibraryService extends Service<Configuration> {
         environment.addResource(StoryResource)
     }
 
-    public static main(String[] args) {
+    public static void main(String[] args) {
         new LibraryService().run(args)
     }
 }

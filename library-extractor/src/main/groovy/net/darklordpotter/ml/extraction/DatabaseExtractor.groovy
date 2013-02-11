@@ -1,20 +1,12 @@
 package net.darklordpotter.ml.extraction
 
 import com.google.common.base.Splitter
-import com.mongodb.BasicDBObject
-import net.darklordpotter.ml.core.Story
-import net.darklordpotter.ml.extraction.extractors.AuthorExtractor
-import net.darklordpotter.ml.extraction.extractors.RatingExtractor
-import net.darklordpotter.ml.extraction.extractors.SummaryExtractor
-import net.darklordpotter.ml.extraction.extractors.TitleExtractor
-import net.darklordpotter.ml.extraction.extractors.UrlExtractor
-import net.darklordpotter.ml.extraction.filters.BBTextDataFilter
 import com.mongodb.DB
 import com.mongodb.DBCollection
 import com.mongodb.MongoClient
-import groovy.sql.GroovyResultSet
-import groovy.sql.Sql
-import net.darklordpotter.ml.extraction.filters.QuoteDataFilter
+import net.darklordpotter.ml.core.Story
+import net.darklordpotter.ml.extraction.extractors.UrlExtractor
+import net.darklordpotter.ml.extraction.providers.DLPDataProvider
 import net.darklordpotter.ml.extraction.utils.LevenshteinDistance
 import net.vz.mongodb.jackson.JacksonDBCollection
 
@@ -23,65 +15,32 @@ import net.vz.mongodb.jackson.JacksonDBCollection
  * @author Michael Rose <michael@fullcontact.com>
  */
 class DatabaseExtractor {
-    static final List<DataFilter> filters = [new BBTextDataFilter(),new QuoteDataFilter()]
-    static final List<DataExtractor> extractors = [
-             new TitleExtractor()
-            ,new AuthorExtractor()
-            ,new RatingExtractor()
-            ,new SummaryExtractor()
-    ]
-    static MongoClient client = new MongoClient("localhost")
-    static DB db = client.getDB("dlp_library")
-    static DBCollection collection = db.getCollection("stories")
-    static JacksonDBCollection<Story, String> jacksonDBCollection = JacksonDBCollection.wrap(collection, Story, String)
+    static final List<DataFilter> filters = ExtractorConfiguration.filters
+    static final List<DataExtractor> extractors = ExtractorConfiguration.extractors
+
+
     static Map<String, Integer> cardinality = new HashMap<>().withDefault { k -> 0 }
 
-    public static void main(String[] args) {
+    public static JacksonDBCollection<Story, String> getCollection() {
+        MongoClient client = new MongoClient("localhost")
+        DB db = client.getDB("dlp_library")
+        DBCollection collection = db.getCollection("stories")
+        JacksonDBCollection<Story, String> jacksonDBCollection = JacksonDBCollection.wrap(collection, Story, String)
+
+        jacksonDBCollection
+    }
+
+    protected static void setup() {
         for (StoryUrlPattern urlPattern : StoryUrlPattern.values()) {
             extractors.add(new UrlExtractor(urlPattern))
         }
-
-        Sql h = Sql.newInstance("jdbc:mysql://localhost/darklord_mainvb", "root", "")
-        h.eachRow("""
-SELECT
-        post.pagetext, post.threadid, thread.title, thread.votenum, thread.votetotal, thread.replycount, thread.lastpost, forum.title as forumname,
-        GROUP_CONCAT(tag.tagtext) as tags
-FROM post
-LEFT JOIN thread
-        USING (threadid)
-LEFT JOIN forum
-        USING (forumid)
-LEFT JOIN tagthread
-        USING (threadid)
-LEFT JOIN tag
-        USING (tagid)
-WHERE thread.sticky = '0'
-AND thread.visible = '1'
-AND post.parentid = '0'
-AND forum.parentid = '2'
-AND forum.forumid NOT IN (40, 77, 41)
-GROUP BY threadid
-ORDER BY post.dateline ASC
-    """) {
-            insertNewRow(extractStoryInformation(it))
-        }
-
-        cardinality.sort { it.value }.findAll { it.value > 1 }.each {
-            println it
-        }
-
-        List<String> names = cardinality.keySet().findAll { LevenshteinDistance.computeDistance(it, "Shezza 88") < 3 }.toList()
-        println names.collect {
-            cardinality.find { it2->it2.key == it }
-        }.sort{it.value}.last()
     }
 
-    static void insertNewRow(Story result) {
-        jacksonDBCollection.update(new Story(result.getThreadId()), result, true, false)
-        //collection.aggregate(new BasicDBObject("$match"))
+    protected static void insertNewRow(Story result) {
+        getCollection().update(new Story(result.getThreadId()), result, true, false)
     }
 
-    static Story extractStoryInformation(GroovyResultSet resultSet) {
+    static Story extractStoryInformation(Map resultSet) {
 
         println "${resultSet.title.replace('&#8216;', '')}"
 
@@ -104,38 +63,34 @@ ORDER BY post.dateline ASC
 
             result.tags.addAll(tags)
         }
-//        result.tags.addAll(
-//
-//        )
 
         cardinality[result.author]++
-        //println result
+
         result
     }
 
+    public static void main(String[] args) {
+        if (args.length == 0) {
+            args = ["localhost", "darklord_mainvb", "root", ""]
+        }
+
+        setup()
+
+        DataProvider provider = new DLPDataProvider(args[0], args[1], args[2], args[3])
+
+        provider.getData().each { m ->
+            Story story = extractStoryInformation(m)
+
+            insertNewRow(story)
+        }
+
+        cardinality.sort { it.value }.findAll { it.value > 1 }.each {
+            println it
+        }
+
+        List<String> names = cardinality.keySet().findAll { LevenshteinDistance.computeDistance(it, "Shezza 88") < 3 }.toList()
+        println names.collect {
+            cardinality.find { it2->it2.key == it }
+        }.sort{it.value}.last()
+    }
 }
-
-
-
-
-/*
-while ($dlpthread = $vbulletin->db->fetch_array($query)) {
-	preg_match('/http:\/\/www\.fanfiction\.net\/s\/([0-9]*)\//i', $dlpthread['pagetext'], $matches);
-	$ffnid[$dlpthread['threadid']] =  $matches[1];
-        preg_match('/http:\/\/www\.patronuscharm\.net\/s\/([0-9]*)\//i', $dlpthread['pagetext'], $matches);
-        $pcid[$dlpthread['threadid']] =  $matches[1];
-	$threads[$dlpthread['threadid']] = $dlpthread['title'];
-	$other[$dlpthread['threadid']]['replies'] = $dlpthread['replycount'];
-	$other[$dlpthread['threadid']]['lastpost'] = $dlpthread['lastpost'];
-	if ($dlpthread['votenum'] > 0) {
-		$other[$dlpthread['threadid']]['rating'] = $dlpthread['votetotal'] / $dlpthread['votenum'];
-	}
-}
-
-$vbulletin->db->free_result($query);
-
-foreach ($threads as $threadid => $title) {
-	$title = str_replace('&#8216;', '', $title);*/
-//	$title = preg_replace('/[^a-z0-9\s]*/i', '', html_entity_decode($title, ENT_QUOTES));
-//$tsort[$threadid] = $title;
-//}
