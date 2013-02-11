@@ -1,5 +1,7 @@
 package net.darklordpotter.ml.core
 
+import com.google.common.collect.Sets
+
 import javax.persistence.Id
 
 /**
@@ -13,8 +15,8 @@ public class Story {
     String summary = ""
     Rating rating
     Double threadRating = 0.0
-    Set<Url> url = [].toSet()
-    Set<String> tags = new HashSet<String>()
+    Set<Url> url = Sets.newHashSet()
+    Set<String> tags = Sets.newHashSet()
 
     Story(Long threadId) {
         this.threadId = threadId
