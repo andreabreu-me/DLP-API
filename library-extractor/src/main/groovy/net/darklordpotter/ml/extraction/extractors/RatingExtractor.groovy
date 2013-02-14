@@ -17,7 +17,7 @@ class RatingExtractor implements DataExtractor {
         Matcher m = rating.matcher(pageText)
 
         if (m.find()) {
-            String ratingText = m.group(1).trim().replace("-", "").replace("+", "PLUS")
+            String ratingText = m.group(1).replaceAll("\\(([^\\)]+)\\)", "").replace("-", "").replace("+", "PLUS").trim()
             try {
                 result.rating = Enum.valueOf(Rating, ratingText)
             } catch (IllegalArgumentException e) {

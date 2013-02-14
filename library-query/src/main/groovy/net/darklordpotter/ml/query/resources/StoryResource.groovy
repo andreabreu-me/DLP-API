@@ -9,27 +9,43 @@ import net.vz.mongodb.jackson.JacksonDBCollection
 import javax.ws.rs.*
 import javax.ws.rs.core.MediaType
 import javax.ws.rs.core.Response
+import java.util.regex.Pattern
 
 /**
  * 2013-02-09
  * @author Michael Rose <michael@fullcontact.com>
  */
 @Path("/stories")
-@Produces(MediaType.APPLICATION_JSON)
+@Produces("application/json; charset=utf-8")
 class StoryResource {
-    static MongoClient client = new MongoClient("localhost")
-    static DB db = client.getDB("dlp_library")
-    static DBCollection collection = db.getCollection("stories")
-    static JacksonDBCollection<Story, String> jacksonDBCollection = JacksonDBCollection.wrap(collection, Story, String)
+    private final DBCollection libraryCollection
+    private final JacksonDBCollection<Story, String> jacksonDBCollection
+
+    StoryResource(final DBCollection libraryCollection) {
+        this.libraryCollection = libraryCollection
+        this.jacksonDBCollection = JacksonDBCollection.wrap(libraryCollection, Story, String)
+    }
 
     @GET
     Iterator<Story> getAllStories(
         @QueryParam("ratingThreshold") Double threshold,
         @QueryParam("sortField") String sortField,
-        @QueryParam("sortDirection") String sortDirection
+        @QueryParam("sortDirection") String sortDirection,
+        @QueryParam("title") String title
     ) {
+        DBObject thresholdQuery
+        if (threshold) {
+            thresholdQuery = DBQuery.and(
+                    DBQuery.regex("title", Pattern.compile("${title}")),
+                    DBQuery.greaterThanEquals("threadRating", threshold)
+            )
+        } else {
+            thresholdQuery = DBQuery.regex("title", Pattern.compile("${title ?: ''}"))
+        }
 
-        DBObject thresholdQuery = constructThresholdQuery(threshold)
+        //constructThresholdQuery(threshold)
+
+//        libraryCollection.
 
         jacksonDBCollection.find(thresholdQuery).sort(
                     new BasicDBObject(sortField ?: 'title', translateSortToInt(sortDirection))
@@ -48,20 +64,16 @@ class StoryResource {
 
     @GET
     @Path("/tagged/{tag}")
-    Iterator<Story> getTaggedStories(@PathParam("tag") String tags) {
+    Iterator<Story> getTaggedStories(
+            @PathParam("tag") String tags,
+            @QueryParam("ratingThreshold") Double threshold,
+            @QueryParam("sortField") String sortField,
+            @QueryParam("sortDirection") String sortDirection) {
         Collection<String> tagList = Splitter.on(",").omitEmptyStrings().trimResults().split(tags).collect()
         println tagList
         jacksonDBCollection.find(DBQuery.all("tags", tagList)).sort(
-                new BasicDBObject("title",-1)
+                new BasicDBObject(sortField ?: 'title', translateSortToInt(sortDirection))
         )
-    }
-
-    protected DBObject constructThresholdQuery(Double threshold) {
-        if (threshold) {
-            return DBQuery.greaterThanEquals("threadRating", threshold)
-        } else {
-            return new BasicDBObject()
-        }
     }
 
     protected int translateSortToInt(String sortDirection) {

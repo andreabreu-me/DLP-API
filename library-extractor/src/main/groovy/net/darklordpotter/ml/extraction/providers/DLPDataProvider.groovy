@@ -29,7 +29,7 @@ class DLPDataProvider implements DataProvider {
     static String getDlpQuery() {
         """
             SELECT
-                    post.pagetext, post.threadid, thread.title, thread.votenum, thread.votetotal, thread.replycount,
+                    post.pagetext, post.dateline, post.threadid, thread.title, thread.votenum, thread.votetotal, thread.replycount,
                     thread.lastpost, forum.title as forumname,
                     GROUP_CONCAT(tag.tagtext) as tags
             FROM post

@@ -15,6 +15,7 @@ public class Story {
     String summary = ""
     Rating rating
     Double threadRating = 0.0
+    Date posted
     Set<Url> url = Sets.newHashSet()
     Set<String> tags = Sets.newHashSet()
 
@@ -50,6 +51,7 @@ public class Story {
         sb.append(", summary='").append(summary).append('\'');
         sb.append(", rating=").append(rating);
         sb.append(", threadRating=").append(threadRating);
+        sb.append(", posted=").append(posted);
         sb.append(", url=").append(url);
         sb.append(", tags=").append(tags);
         sb.append('}');

@@ -11,9 +11,14 @@ import java.util.regex.Pattern
  */
 class BBTextDataFilter implements DataFilter {
     private static Pattern bbtxt = Pattern.compile("\\[[^\\]]+\\]")
+    private static Pattern bbtxtUrl = Pattern.compile("\\[URL=\"(.*)\"\\]")
     public String filter(String text) {
-        Matcher m = bbtxt.matcher(text)
+        Matcher urlm = bbtxtUrl.matcher(text)
 
+        if (urlm.find()) {
+            urlm.replaceAll(urlm.group(1))
+        }
+        Matcher m = bbtxt.matcher(text)
         m.replaceAll("")
     }
 }

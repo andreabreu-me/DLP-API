@@ -11,7 +11,9 @@ import java.util.regex.Pattern
  */
 class QuoteDataFilter implements DataFilter {
     public String filter(String text) {
-        text.replaceAll("â€™", "'")
+        text.replaceAll("‘", "'")
+            .replaceAll("’", "'")
+            .replaceAll("&#8211;", "–")
             .replaceAll("&#8217;", "'")
             .replaceAll("&#8220;", '"')
             .replaceAll("&#8221;", '"')

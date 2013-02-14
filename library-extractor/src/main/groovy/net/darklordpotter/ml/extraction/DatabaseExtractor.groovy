@@ -64,6 +64,8 @@ class DatabaseExtractor {
             result.tags.addAll(tags)
         }
 
+        result.posted = new Date(resultSet.dateline * 1000) // unix timestamp
+
         cardinality[result.author]++
 
         result
