@@ -7,8 +7,11 @@ import com.yammer.dropwizard.Service
 import com.yammer.dropwizard.config.Bootstrap
 import com.yammer.dropwizard.config.Configuration
 import com.yammer.dropwizard.config.Environment
+import net.darklordpotter.ml.query.resources.FFNResource
 import net.darklordpotter.ml.query.resources.StoryResource
 import net.darklordpotter.ml.query.resources.TagsResource
+
+import java.util.concurrent.TimeUnit
 
 /**
  * 2013-02-09
@@ -27,8 +30,10 @@ class LibraryService extends Service<Configuration> {
         final DBCollection collection = db.getCollection("stories")
 
         environment.addFilter(CORSFilter, "/*")
+        environment.addFilter(new RateLimitingFilter(5, 5, TimeUnit.SECONDS), "/ffn/*")
         environment.addResource(new StoryResource(collection))
         environment.addResource(new TagsResource(collection))
+        environment.addResource(new FFNResource())
     }
 
     public static void main(String[] args) {

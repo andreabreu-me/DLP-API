@@ -17,6 +17,7 @@ class CORSFilter implements Filter {
         HttpServletResponse res = servletResponse as HttpServletResponse
         res.addHeader("Access-Control-Allow-Origin", "*")
         res.addHeader("Access-Control-Allow-Credentials", "true")
+        res.addHeader("Access-Control-Allow-Headers", "X-Requested-With")
 
         filterChain.doFilter(servletRequest, servletResponse)
     }
