@@ -14,7 +14,7 @@ function loadStories(tag) {
 
     $('.typeahead').val(tag);
 
-    url = "http://localhost:8080/";
+    url = "http://api.darklordpott:8080/";
     if (tag && tag == "*") {
         url += 'stories/';
     } else if (tag) {
@@ -57,6 +57,14 @@ Handlebars.registerHelper('actionTag', function(object) {
 Handlebars.registerHelper('toFixed2', function(object) {
     return object.toFixed(1);
 });
+angular.module('dlp-library', ['ngResource']);
+function StoryController($scope) {
+    this.Story = $resource(
+            'http://localhost\\:8080/stories'
+    );
+    $scope.stories = this.Story.get();
+    //$scope.cost = 19.95;
+}
 
 //
 //App = Ember.Application.create();

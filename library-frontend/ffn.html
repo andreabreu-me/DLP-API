@@ -23,7 +23,7 @@
 
         <script src="js/vendor/modernizr-2.6.2-respond-1.1.0.min.js"></script>
     </head>
-    <body ng-app="app">
+    <body data-ng-app="app">
         <!--[if lt IE 7]>
             <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
         <![endif]-->
@@ -48,38 +48,49 @@
                 </div>
             </div>
         </div>
-        <div class="container" ng-controller="StoryController">
-            <div class="row">
-                <h1>DLP Library Stories</h1>
+        <aside class="cover">
+            <div class="cover-img">
             </div>
-            <div class="row result ng-cloak" ng-cloak>
-                <div>
-                <div class="loading-indicator" ng-hide="loaded">
-                    <span class="icon-2x icon-spinner icon-spin"></span>
-                    Loading...
+            <div class="cover-body">
+                <div style="position: relative;">
+                <h1 class="cover-title">DLP Library</h1>
                 </div>
-                <div ng-view></div>
-        </div>
+            </div>
+        </aside>
+        <section class="wrapper">
+            <div class="container" data-ng-controller="StoryController">
+                <div class="row">
+                    <h1>DLP Library Stories</h1>
+                </div>
+                <div class="row result data-ng-cloak" data-ng-cloak>
+                    <!--<div>-->
+                    <!--<div class="loading-indicator" data-ng-hide="loaded">-->
+                        <!--<span class="icon-2x icon-spinner icon-spin"></span>-->
+                        <!--Loading...-->
+                    <!--</div>-->
+                    <div data-ng-view></div>
+                </div>
+            </div>
+        </section>
 
         <hr>
 
         <footer>
             <p>&copy; DLP 2013</p>
         </footer>
-
-        </div> <!-- /container -->
         <script id="search.html" type="text/ng-template">
-            <form id="search" autocomplete="off">
-                <input class="input-xxlarge" type="text" data-provide="typeahead" class="typeahead" placeholder="Search" ng-model="search.$" />
-                <input type="text" data-provide="typeahead" class="typeahead" placeholder="Tag(s)" ng-model="search.tags" />
-            </form>
-            <span ng-show="error" ng-cloak>
+            <span data-ng-show="error" data-ng-cloak>
                 <div class="alert">
                     <button type="button" class="close" data-dismiss="alert">&times;</button>
                     <strong>Error!</strong> Server returned error {{error}}
                 </div>
             </span>
-            <div ng-repeat="story in stories | filter:search | limitTo:50 | orderBy:['-threadRating', 'title']" ng-show="loaded">
+
+            <div>
+                <button class="btn btn-success pull-right" data-ng-click="chapterId = chapterId + 1" data-ng-show="chapterId < story.chapters">Next Chapter ></button>
+                <button class="btn btn-success pull-left" data-ng-click="chapterId = chapterId - 1"  data-ng-show="chapterId > 1">< Previous Chapter</button>
+            </div>
+            <div data-ng-show="loaded">
                 <div class="row">
                     <div class="span12 border-bottom2">
                         <h3 class=  "story-title" title="{{story.threadId}}">
@@ -89,25 +100,15 @@
                             <i>{{story.summary}}</i>
                         </p>
                         <p>
-                            <a class="btn-small btn-info" href="https://forums.darklordpotter.net/showthread.php?threadid={{story.threadId}}">Thread</a>
-                            <a ng-repeat="url in story.urls" class="btn-small btn-success" href="{{url.url}}">{{url.type}}</a>
+                            <span class="label ffn-tag" data-ng-repeat="tag in story.tags">{{tag}}</span>
                         </p>
-                        <span class="badge badge-inverse icon-star muted"> {{story.threadRating | number:2}}</span>
-                        <span ng-repeat="tag in story.tags" class="label story-tag" ng-class="specialTag(tag)" ng-click="search.tags = tag">{{tag}}</span>
+                        <div data-ng-bind-html="story.storyText"></div>
                     </div>
                 </div>
-            </div>
-        </script>
-        <script id="tags.html" type="text/ng-template">
-            <h2>Top 20 Tags</h2>
-            <span ng-show="error" ng-cloak>
-                <div class="alert">
-                    <button type="button" class="close" data-dismiss="alert">&times;</button>
-                    <strong>Error!</strong> Server returned error {{error}}
+                <div>
+                    <button class="btn btn-success pull-right" data-ng-click="chapterId = chapterId + 1">Next Chapter ></button>
+                    <button class="btn btn-success pull-left" data-ng-click="chapterId = chapterId - 1">< Previous Chapter</button>
                 </div>
-            </span>
-            <div ng-repeat="tag in tags | limitTo: 20" ng-show="loaded">
-                {{tag.tag}} -- {{tag.count}}
             </div>
         </script>
         <script id="about.html" type="text/ng-template">
@@ -121,8 +122,9 @@
 
         <script src="components/handlebars/handlebars.js"></script>
         <script src="components/angular/angular.js"></script>
+        <script src="components/angular-sanitize/angular-sanitize.js"></script>
         <script src="components/underscore/underscore-min.js"></script>
-        <script src="js/main-angular.js"></script>
+        <script src="js/ffn.js"></script>
 
         <script>
             var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']];

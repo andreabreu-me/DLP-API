@@ -23,7 +23,7 @@
 
         <script src="js/vendor/modernizr-2.6.2-respond-1.1.0.min.js"></script>
     </head>
-    <body ng-app="app">
+    <body>
         <!--[if lt IE 7]>
             <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
         <![endif]-->
@@ -40,25 +40,38 @@
                     <div class="nav-collapse collapse">
                         <ul class="nav">
                             <li class="active"><a href="#">Home</a></li>
-                            <li><a href="#/tags">Tags</a></li>
-                            <li><a href="#/about">About</a></li>
+                            <li><a href="#about">About</a></li>
                             <li><a href="#contact">Contact</a></li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="#">Action</a></li>
+                                    <li><a href="#">Another action</a></li>
+                                    <li><a href="#">Something else here</a></li>
+                                    <li class="divider"></li>
+                                    <li class="nav-header">Nav header</li>
+                                    <li><a href="#">Separated link</a></li>
+                                    <li><a href="#">One more separated link</a></li>
+                                </ul>
+                            </li>
                         </ul>
                     </div><!--/.nav-collapse -->
                 </div>
             </div>
         </div>
-        <div class="container" ng-controller="StoryController">
+        <div class="container">
             <div class="row">
                 <h1>DLP Library Stories</h1>
+                <form id="search" autocomplete="off">
+                    <input type="text" data-provide="typeahead" class="typeahead" placeholder="Tag(s)" />
+                </form>
             </div>
-            <div class="row result ng-cloak" ng-cloak>
-                <div>
-                <div class="loading-indicator" ng-hide="loaded">
+            <div class="row result">
+                <div class="loading-indicator">
                     <span class="icon-2x icon-spinner icon-spin"></span>
                     Loading...
                 </div>
-                <div ng-view></div>
+            </div>
         </div>
 
         <hr>
@@ -68,51 +81,31 @@
         </footer>
 
         </div> <!-- /container -->
-        <script id="search.html" type="text/ng-template">
-            <form id="search" autocomplete="off">
-                <input class="input-xxlarge" type="text" data-provide="typeahead" class="typeahead" placeholder="Search" ng-model="search.$" />
-                <input type="text" data-provide="typeahead" class="typeahead" placeholder="Tag(s)" ng-model="search.tags" />
-            </form>
-            <span ng-show="error" ng-cloak>
-                <div class="alert">
-                    <button type="button" class="close" data-dismiss="alert">&times;</button>
-                    <strong>Error!</strong> Server returned error {{error}}
-                </div>
-            </span>
-            <div ng-repeat="story in stories | filter:search | limitTo:50 | orderBy:['-threadRating', 'title']" ng-show="loaded">
-                <div class="row">
-                    <div class="span12 border-bottom2">
-                        <h3 class=  "story-title" title="{{story.threadId}}">
-                            {{story.title}} by {{story.author}}
-                        </h3>
-                        <p>
-                            <i>{{story.summary}}</i>
-                        </p>
-                        <p>
-                            <a class="btn-small btn-info" href="https://forums.darklordpotter.net/showthread.php?threadid={{story.threadId}}">Thread</a>
-                            <a ng-repeat="url in story.urls" class="btn-small btn-success" href="{{url.url}}">{{url.type}}</a>
-                        </p>
-                        <span class="badge badge-inverse icon-star muted"> {{story.threadRating | number:2}}</span>
-                        <span ng-repeat="tag in story.tags" class="label story-tag" ng-class="specialTag(tag)" ng-click="search.tags = tag">{{tag}}</span>
-                    </div>
+        <script id="story-template" type="text/x-handlebars-template">
+            <div class="row">
+                <div class="span12 border-bottom2">
+                    <h3 class="story-title" title="{{threadId}}">
+                        {{title}} by {{author}}
+                    </h3>
+                    <p>
+                        <i>
+                        {{summary}}
+                        </i>
+                    </p>
+                    <p>
+                        <a class="btn-small btn-info" href="https://forums.darklordpotter.net/showthread.php?threadid={{threadId}}">Thread</a>
+                        {{#each url}}
+                        <a class="btn-small btn-success" href="{{url}}">{{capitalize type}}</a>
+                        {{/each}}
+                    </p>
+                    <span class="badge badge-inverse icon-star muted"> {{toFixed2 threadRating}}</span>
+                    {{#each tags}}
+                        <span class="label {{actionTag this}} story-tag">{{this}}</span>
+                    {{/each}}
                 </div>
             </div>
         </script>
-        <script id="tags.html" type="text/ng-template">
-            <h2>Top 20 Tags</h2>
-            <span ng-show="error" ng-cloak>
-                <div class="alert">
-                    <button type="button" class="close" data-dismiss="alert">&times;</button>
-                    <strong>Error!</strong> Server returned error {{error}}
-                </div>
-            </span>
-            <div ng-repeat="tag in tags | limitTo: 20" ng-show="loaded">
-                {{tag.tag}} -- {{tag.count}}
-            </div>
-        </script>
-        <script id="about.html" type="text/ng-template">
-            Reimagining the DLP library
-        </script>
+
 
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
         <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.9.0.min.js"><\/script>')</script>
@@ -122,7 +115,7 @@
         <script src="components/handlebars/handlebars.js"></script>
         <script src="components/angular/angular.js"></script>
         <script src="components/underscore/underscore-min.js"></script>
-        <script src="js/main-angular.js"></script>
+        <script src="js/main.js"></script>
 
         <script>
             var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']];

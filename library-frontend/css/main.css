@@ -9,3 +9,58 @@
     border-bottom: 1px solid #d3d3d3;
 }
 
+.story-tag.label {
+    margin-right: 0.33em;
+    cursor: pointer;
+}
+
+.ffn-tag.label {
+    margin-right: 0.33em;
+}
+
+
+#search {
+    margin-bottom: 10px;
+}
+
+.wrapper {
+    margin-left: 550px;
+}
+
+.cover {
+    position: fixed;
+    z-index: 100;
+    top: 0;
+    left: 0;
+    width: 30%;
+    height: 100%;
+    max-width: 500px;
+}
+
+.cover-img {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-position: center;
+    background-size: cover;
+    box-shadow: inset -1px 0 0 rgba(0,0,0,0.3);
+    top: 0;
+    left: 0;
+    background-position: center;
+    background-image: url('../img/library-prague.jpg');
+}
+
+.cover-body {
+    position: absolute;
+    bottom: 0;
+    padding: 50px 10% 10%;
+    width: 100%;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+.cover-title {
+    color: #fff;
+    font-size: 36px;
+}
