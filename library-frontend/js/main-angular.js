@@ -54,6 +54,10 @@ function TagController($scope, $http, $routeParams) {
 
 angular.module('filters', []).filter('ratingTitle', function() {
     return function(text) {
-        return text.replace("PLUS", "+");
+        if (text) {
+            return text.replace("PLUS", "+");
+        } else {
+            return text;
+        }
     };
 });
