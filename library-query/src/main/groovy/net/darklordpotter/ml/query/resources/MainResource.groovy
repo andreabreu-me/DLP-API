@@ -7,7 +7,7 @@ import javax.ws.rs.core.Response
 
 /**
  * 2013-02-25
- * @author Michael Rose <michael@fullcontact.com>
+ * @author Michael Rose <elementation@gmail.com>
  */
 @Path("/")
 class MainResource {

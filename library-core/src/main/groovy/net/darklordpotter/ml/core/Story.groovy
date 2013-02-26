@@ -6,7 +6,7 @@ import javax.persistence.Id
 
 /**
  * 2013-02-07
- * @author Michael Rose <michael@fullcontact.com>
+ * @author Michael Rose <elementation@gmail.com>
  */
 public class Story {
     private Long threadId = 0

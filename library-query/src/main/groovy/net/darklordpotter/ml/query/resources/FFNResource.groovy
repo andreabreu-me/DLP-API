@@ -31,7 +31,7 @@ import java.util.regex.Pattern;
 /**
  * 2013-02-19
  *
- * @author Michael Rose <michael@fullcontact.com>
+ * @author Michael Rose <elementation@gmail.com>
  */
 @Path("/ffn/{storyId}/{chapterId}")
 @Produces(MediaType.APPLICATION_JSON)

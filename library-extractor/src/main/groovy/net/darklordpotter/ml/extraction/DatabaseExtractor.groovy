@@ -9,7 +9,7 @@ import net.darklordpotter.ml.extraction.utils.LevenshteinDistance
 
 /**
  * 2013-02-07
- * @author Michael Rose <michael@fullcontact.com>
+ * @author Michael Rose <elementation@gmail.com>
  */
 class DatabaseExtractor {
     static final List<DataFilter> filters = ExtractorConfiguration.filters

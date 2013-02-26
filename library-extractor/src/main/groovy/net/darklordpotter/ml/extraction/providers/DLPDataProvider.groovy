@@ -5,7 +5,7 @@ import net.darklordpotter.ml.extraction.DataProvider
 
 /**
  * 2013-02-10
- * @author Michael Rose <michael@fullcontact.com>
+ * @author Michael Rose <elementation@gmail.com>
  */
 class DLPDataProvider implements DataProvider {
     private String host

@@ -9,7 +9,7 @@ import java.util.regex.Pattern
 
 /**
  * 2013-02-07
- * @author Michael Rose <michael@fullcontact.com>
+ * @author Michael Rose <elementation@gmail.com>
  */
 class RatingExtractor implements DataExtractor {
     private static Pattern rating = Pattern.compile("Rating:(.*)")

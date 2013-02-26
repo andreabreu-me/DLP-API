@@ -7,7 +7,7 @@ import net.vz.mongodb.jackson.JacksonDBCollection
 
 /**
  * 2013-02-25
- * @author Michael Rose <michael@fullcontact.com>
+ * @author Michael Rose <elementation@gmail.com>
  */
 class MongoDBSink implements DataSink {
     JacksonDBCollection<Story, String> jacksonDBCollection

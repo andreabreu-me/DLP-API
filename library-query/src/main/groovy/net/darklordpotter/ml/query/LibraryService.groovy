@@ -16,7 +16,7 @@ import java.util.concurrent.TimeUnit
 
 /**
  * 2013-02-09
- * @author Michael Rose <michael@fullcontact.com>
+ * @author Michael Rose <elementation@gmail.com>
  */
 class LibraryService extends Service<Configuration> {
     @Override

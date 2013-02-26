@@ -14,7 +14,7 @@ import java.util.regex.Pattern
 
 /**
  * 2013-02-09
- * @author Michael Rose <michael@fullcontact.com>
+ * @author Michael Rose <elementation@gmail.com>
  */
 @Path("/stories")
 @Produces("application/json; charset=utf-8")

@@ -9,7 +9,7 @@ import java.util.regex.Matcher
 
 /**
  * 2013-02-09
- * @author Michael Rose <michael@fullcontact.com>
+ * @author Michael Rose <elementation@gmail.com>
  */
 class UrlExtractor implements DataExtractor {
     private final StoryUrlPattern storyUrlPattern

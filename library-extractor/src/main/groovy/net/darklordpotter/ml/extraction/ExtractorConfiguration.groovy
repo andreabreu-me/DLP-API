@@ -9,7 +9,7 @@ import net.darklordpotter.ml.extraction.filters.QuoteDataFilter
 
 /**
  * 2013-02-10
- * @author Michael Rose <michael@fullcontact.com>
+ * @author Michael Rose <elementation@gmail.com>
  */
 class ExtractorConfiguration {
     public static List<DataFilter> getFilters() {

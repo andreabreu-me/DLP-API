@@ -4,7 +4,7 @@ import java.util.regex.Pattern
 
 /**
  * 2013-02-09
- * @author Michael Rose <michael@fullcontact.com>
+ * @author Michael Rose <elementation@gmail.com>
  */
 public enum StoryUrlPattern {
     FFN("http:\\/\\/(?:www\\.)?fanfiction\\.net\\/s\\/([0-9]+)/([0-9]+)/?([a-z\\-_0-9]*)?"),

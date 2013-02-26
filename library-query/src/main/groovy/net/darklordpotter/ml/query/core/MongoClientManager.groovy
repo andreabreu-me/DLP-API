@@ -4,7 +4,7 @@ import com.yammer.dropwizard.lifecycle.Managed
 
 /**
  * 2013-02-11
- * @author Michael Rose <michael@fullcontact.com>
+ * @author Michael Rose <elementation@gmail.com>
  */
 class MongoClientManager implements Managed {
     void start() throws Exception {

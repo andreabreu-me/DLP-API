@@ -5,7 +5,7 @@ import javax.servlet.http.HttpServletResponse
 
 /**
  * 2013-01-06
- * @author Michael Rose <michael@fullcontact.com>
+ * @author Michael Rose <elementation@gmail.com>
  */
 class CORSFilter implements Filter {
 

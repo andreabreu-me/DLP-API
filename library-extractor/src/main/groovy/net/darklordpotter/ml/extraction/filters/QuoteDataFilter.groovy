@@ -7,7 +7,7 @@ import java.util.regex.Pattern
 
 /**
  * 2013-02-09
- * @author Michael Rose <michael@fullcontact.com>
+ * @author Michael Rose <elementation@gmail.com>
  */
 class QuoteDataFilter implements DataFilter {
     public String filter(String text) {

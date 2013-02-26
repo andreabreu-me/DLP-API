@@ -17,7 +17,7 @@ import java.util.concurrent.atomic.AtomicLong
 
 /**
  * 2013-01-06
- * @author Michael Rose <michael@fullcontact.com>
+ * @author Michael Rose <elementation@gmail.com>
  */
 class RateLimitingFilter implements Filter {
     private final long requestLimit
