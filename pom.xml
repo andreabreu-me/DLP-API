@@ -14,6 +14,21 @@
         <module>library-query</module>
     </modules>
 
+    <developers>
+        <developer>
+            <name>Michael Rose</name>
+            <email>elementation@gmail.com</email>
+            <organization>DLP Group</organization>
+        </developer>
+    </developers>
+
+    <licenses>
+        <license>
+            <name>MIT License</name>
+            <url>http://www.opensource.org/licenses/mit-license.php</url>
+        </license>
+    </licenses>
+
     <properties>
         <groovy.version>1.8.6</groovy.version>
     </properties>
