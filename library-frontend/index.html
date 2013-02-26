@@ -53,8 +53,7 @@
                 </div>
             </div>
             <div class="container">
-                <div class="row result>
-                    <div>
+                <div class="row result">
                     <div class="loading-indicator" ng-hide="loaded">
                         <span class="icon-2x icon-spinner icon-spin"></span>
                         Loading...
@@ -76,7 +75,7 @@
             <article ng-repeat="story in stories | filter:query | orderBy:order_predicate | limitTo:50" ng-show="loaded" data-story-id="{{story.threadId}}">
                 <div class="row">
                     <div class="span12 border-bottom2">
-                        <a href="https://forums.darklordpotter.net/showthread.php?threadid={{story.threadId}}">
+                        <a class="story-item-title" href="https://forums.darklordpotter.net/showthread.php?threadid={{story.threadId}}">
                             <h3 class="story-title" title="{{story.threadId}}">
                                 {{story.title}} by {{story.author}}
                             </h3>
@@ -85,12 +84,12 @@
                             <i>{{story.summary}}</i>
                         </p>
                         <p>
-                            <a class="btn-small btn-info" href="https://forums.darklordpotter.net/showthread.php?threadid={{story.threadId}}">DLP Thread</a>
                             <ul class="nav-list">
                                 <li ng-repeat="url in story.url"><a class="" href="{{url.url}}">{{url.url}}</a></li>
                             </ul>
                         </p>
                         <span class="badge badge-inverse icon-star muted"> {{story.threadRating | number:2}}</span>
+                        <span class="badge badge-info" data-ng-show="story.rating && story.rating != 'UNKNOWN'">{{story.rating | ratingTitle}}</span>
                         <span ng-repeat="tag in story.tags" class="label story-tag" data-tag-name="{{tag}}" ng-class="specialTag(tag)" ng-click="setSearchTag(tag)">{{tag}}</span>
                     </div>
                 </div>

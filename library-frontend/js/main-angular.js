@@ -1,5 +1,5 @@
 //angular.module('dlp-library', ['ngResource']);
-var app = angular.module('app', []);
+var app = angular.module('app', ['filters']);
 
 app.config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider) {
     $routeProvider.
@@ -9,6 +9,7 @@ app.config(['$routeProvider', '$locationProvider', function($routeProvider, $loc
             otherwise({redirectTo: '/search/'});
     //$locationProvider.html5Mode( true );
 }]);
+
 
 function StoryController($scope, $http, $routeParams) {
     $scope.loaded = false;
@@ -51,5 +52,8 @@ function TagController($scope, $http, $routeParams) {
 
 }
 
-
-
+angular.module('filters', []).filter('ratingTitle', function() {
+    return function(text) {
+        return text.replace("PLUS", "+");
+    };
+});
