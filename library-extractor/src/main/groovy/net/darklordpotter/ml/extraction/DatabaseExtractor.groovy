@@ -31,7 +31,9 @@ class DatabaseExtractor {
 
         String pageText = resultSet.pagetext
         for (DataFilter filter: filters) {
-            pageText = filter.filter(pageText)
+            if (pageText) {
+                pageText = filter.filter(pageText)
+            }
         }
 
         Story result = new Story(resultSet.threadId)
