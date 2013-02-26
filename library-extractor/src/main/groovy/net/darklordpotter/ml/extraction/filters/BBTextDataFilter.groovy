@@ -11,14 +11,23 @@ import java.util.regex.Pattern
  */
 class BBTextDataFilter implements DataFilter {
     private static Pattern bbtxt = Pattern.compile("\\[[^\\]]+\\]")
-    private static Pattern bbtxtUrl = Pattern.compile("\\[URL=\"(.*)\"\\]")
+    private static Pattern bbtxtUrl = Pattern.compile("\\[URL=\"([^\\]]+)\"\\]")
+    private static Pattern bbtxtColor = Pattern.compile("\\[COLOR=\"([^\\]]+)\"\\]")
     public String filter(String text) {
         Matcher urlm = bbtxtUrl.matcher(text)
 
         if (urlm.find()) {
             urlm.replaceAll(urlm.group(1))
         }
+
+        Matcher colorm = bbtxtColor.matcher(text)
+        if (colorm.find()) {
+            colorm.replaceAll("")
+        }
+
         Matcher m = bbtxt.matcher(text)
-        m.replaceAll("")
+        if (m.find()) {
+            m.replaceAll("")
+        }
     }
 }

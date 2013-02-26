@@ -36,7 +36,9 @@ class DatabaseExtractor {
 
         Story result = new Story(resultSet.threadId)
         for (DataExtractor extractor : extractors) {
-            result = extractor.apply(pageText, result)
+            if (pageText) {
+                result = extractor.apply(pageText, result)
+            }
         }
 
         if (!result.title) result.title = resultSet.title.replace('&#8216;', '').replace(' - [a-zA-Z0-9]{1,4}', '').replaceAll("â€™", "'")
