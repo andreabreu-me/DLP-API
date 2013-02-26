@@ -43,7 +43,7 @@ class DLPDataProvider implements DataProvider {
                     USING (tagid)
             WHERE thread.sticky = '0'
             AND thread.visible = '1'
-            AND post.parentid = '0'
+            AND post.postid = thread.firstpostid
             AND forum.parentid = '2'
             AND forum.forumid NOT IN (40, 77, 41)
             GROUP BY threadid
