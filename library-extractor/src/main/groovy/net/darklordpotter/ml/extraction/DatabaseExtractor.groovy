@@ -1,14 +1,11 @@
 package net.darklordpotter.ml.extraction
 
 import com.google.common.base.Splitter
-import com.mongodb.DB
-import com.mongodb.DBCollection
-import com.mongodb.MongoClient
 import net.darklordpotter.ml.core.Story
 import net.darklordpotter.ml.extraction.extractors.UrlExtractor
 import net.darklordpotter.ml.extraction.providers.DLPDataProvider
+import net.darklordpotter.ml.extraction.sinks.MongoDBSink
 import net.darklordpotter.ml.extraction.utils.LevenshteinDistance
-import net.vz.mongodb.jackson.JacksonDBCollection
 
 /**
  * 2013-02-07
@@ -21,23 +18,11 @@ class DatabaseExtractor {
 
     static Map<String, Integer> cardinality = new HashMap<>().withDefault { k -> 0 }
 
-    public static JacksonDBCollection<Story, String> getCollection() {
-        MongoClient client = new MongoClient("localhost")
-        DB db = client.getDB("dlp_library")
-        DBCollection collection = db.getCollection("stories")
-        JacksonDBCollection<Story, String> jacksonDBCollection = JacksonDBCollection.wrap(collection, Story, String)
-
-        jacksonDBCollection
-    }
 
     protected static void setup() {
         for (StoryUrlPattern urlPattern : StoryUrlPattern.values()) {
             extractors.add(new UrlExtractor(urlPattern))
         }
-    }
-
-    protected static void insertNewRow(Story result) {
-        getCollection().update(new Story(result.getThreadId()), result, true, false)
     }
 
     static Story extractStoryInformation(Map resultSet) {
@@ -79,11 +64,12 @@ class DatabaseExtractor {
         setup()
 
         DataProvider provider = new DLPDataProvider(args[0], args[1], args[2], args[3])
+        DataSink sink = new MongoDBSink("dlp_library", "stories")
 
         provider.getData().each { m ->
             Story story = extractStoryInformation(m)
 
-            insertNewRow(story)
+            sink.insertStory(story)
         }
 
         cardinality.sort { it.value }.findAll { it.value > 1 }.each {

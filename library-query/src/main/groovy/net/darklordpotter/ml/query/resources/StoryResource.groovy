@@ -2,6 +2,7 @@ package net.darklordpotter.ml.query.resources
 
 import com.google.common.base.Splitter
 import com.mongodb.*
+import com.yammer.metrics.annotation.Metered
 import net.darklordpotter.ml.core.Story
 import net.vz.mongodb.jackson.DBQuery
 import net.vz.mongodb.jackson.JacksonDBCollection
@@ -27,6 +28,7 @@ class StoryResource {
     }
 
     @GET
+    @Metered
     Iterator<Story> getAllStories(
         @QueryParam("ratingThreshold") Double threshold,
         @QueryParam("sortField") String sortField,

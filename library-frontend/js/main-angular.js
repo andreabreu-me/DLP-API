@@ -11,19 +11,24 @@ app.config(['$routeProvider', '$locationProvider', function($routeProvider, $loc
 }]);
 
 function StoryController($scope, $http, $routeParams) {
-    alert($location);
     $scope.loaded = false;
-    $scope.searchText = $routeParams.q;
-    $scope.q = $routeParams.q;
+//    $scope.searchText = $routeParams.q;
+//    $scope.q = $routeParams.q;
+//    $scope.query = {};
 
     $http.get('http://api.darklordpotter.net/stories').success(function(data, status) {
          $scope.stories = data;
         $scope.loaded = true;
-        alert(status);
-    }).error(function(data, status, headers, config) {
+    }).error(function(data, status) {
         $scope.loaded = true;
         $scope.error = status;
     });
+
+    $scope.setSearchTag = function(tag) {
+        if ($scope.query) {
+            $scope.query.tags = tag;
+        }
+    };
 
     $scope.specialTag = function specialTag(tag) {
         if ($.inArray(tag, ['completed', 'oneshot', 'incomplete', 'complete', 'abandoned']) > -1) {
