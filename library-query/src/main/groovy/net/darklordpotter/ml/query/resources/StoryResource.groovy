@@ -55,6 +55,7 @@ class StoryResource {
     }
 
     @GET
+    @Metered
     @Path("/{storyId}")
     Story getStory(@PathParam("storyId") Long storyId) {
         Story story = jacksonDBCollection.findOneById(storyId.toString())
@@ -65,6 +66,7 @@ class StoryResource {
     }
 
     @GET
+    @Metered
     @Path("/tagged/{tag}")
     Iterator<Story> getTaggedStories(
             @PathParam("tag") String tags,

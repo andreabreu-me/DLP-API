@@ -3,6 +3,7 @@ package net.darklordpotter.ml.query
 import com.mongodb.DB
 import com.mongodb.DBCollection
 import com.mongodb.MongoClient
+import com.mongodb.MongoClientOptions
 import com.yammer.dropwizard.Service
 import com.yammer.dropwizard.config.Bootstrap
 import com.yammer.dropwizard.config.Configuration
@@ -26,7 +27,16 @@ class LibraryService extends Service<Configuration> {
 
     @Override
     void run(Configuration configuration, Environment environment) throws Exception {
-        final MongoClient client = new MongoClient("localhost")
+        final MongoClient client = new MongoClient("localhost",
+                new MongoClientOptions.Builder()
+                    .connectionsPerHost(250)
+                    .socketTimeout(5000)
+                    .connectTimeout(10)
+                    .maxWaitTime(5000)
+                    .threadsAllowedToBlockForConnectionMultiplier(5)
+                    .build()
+        )
+
         final DB db = client.getDB("dlp_library")
         final DBCollection collection = db.getCollection("stories")
 
