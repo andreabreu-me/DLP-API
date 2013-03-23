@@ -3,11 +3,11 @@ package net.darklordpotter.ml.query
 import com.mongodb.DB
 import com.mongodb.DBCollection
 import com.mongodb.MongoClient
-import com.mongodb.MongoClientOptions
 import com.yammer.dropwizard.Service
 import com.yammer.dropwizard.config.Bootstrap
-import com.yammer.dropwizard.config.Configuration
 import com.yammer.dropwizard.config.Environment
+import net.darklordpotter.ml.query.core.MongoClientManager
+import net.darklordpotter.ml.query.healthcheck.MongoHealthCheck
 import net.darklordpotter.ml.query.resources.FFNResource
 import net.darklordpotter.ml.query.resources.MainResource
 import net.darklordpotter.ml.query.resources.StoryResource
@@ -19,23 +19,17 @@ import java.util.concurrent.TimeUnit
  * 2013-02-09
  * @author Michael Rose <elementation@gmail.com>
  */
-class LibraryService extends Service<Configuration> {
+class LibraryService extends Service<LibraryConfiguration> {
     @Override
-    void initialize(Bootstrap<Configuration> bootstrap) {
+    void initialize(Bootstrap<LibraryConfiguration> bootstrap) {
 
     }
 
     @Override
-    void run(Configuration configuration, Environment environment) throws Exception {
-        final MongoClient client = new MongoClient("localhost",
-                new MongoClientOptions.Builder()
-                    .connectionsPerHost(250)
-                    .socketTimeout(5000)
-                    .connectTimeout(10)
-                    .maxWaitTime(5000)
-                    .threadsAllowedToBlockForConnectionMultiplier(5)
-                    .build()
-        )
+    void run(LibraryConfiguration configuration, Environment environment) throws Exception {
+        MongoClientManager mongoClientManager = new MongoClientManager(configuration.mongoDsn)
+
+        final MongoClient client = mongoClientManager.getClient()
 
         final DB db = client.getDB("dlp_library")
         final DBCollection collection = db.getCollection("stories")
@@ -46,6 +40,7 @@ class LibraryService extends Service<Configuration> {
         environment.addResource(new StoryResource(collection))
         environment.addResource(new TagsResource(collection))
         environment.addResource(new FFNResource())
+        environment.addHealthCheck(new MongoHealthCheck(client))
     }
 
     public static void main(String[] args) {
