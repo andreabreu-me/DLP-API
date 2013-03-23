@@ -10,5 +10,8 @@ import com.yammer.dropwizard.config.Configuration;
  */
 public class LibraryConfiguration extends Configuration {
     @JsonProperty
-    public String mongoDsn = "mongodb://localhost/dlp-library";
+    public String mongoDatabaseName = "dlp-library";
+
+    @JsonProperty
+    public String mongoDsn = "mongodb://localhost/"+mongoDatabaseName;
 }

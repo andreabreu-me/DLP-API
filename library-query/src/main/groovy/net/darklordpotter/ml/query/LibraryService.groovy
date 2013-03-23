@@ -31,7 +31,7 @@ class LibraryService extends Service<LibraryConfiguration> {
 
         final MongoClient client = mongoClientManager.getClient()
 
-        final DB db = client.getDB("dlp_library")
+        final DB db = client.getDB(configuration.mongoDatabaseName)
         final DBCollection collection = db.getCollection("stories")
 
         environment.addFilter(CORSFilter, "/*")
