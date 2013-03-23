@@ -1,6 +1,7 @@
-package net.darklordpotter.ml.extraction.filters
+package net.darklordpotter.ml.query
 
 import net.darklordpotter.ml.extraction.DataFilter
+import net.darklordpotter.ml.extraction.filters.BBTextDataFilter
 import org.junit.Before
 import org.junit.Test;
 
