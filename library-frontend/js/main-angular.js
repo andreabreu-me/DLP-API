@@ -1,5 +1,6 @@
 //angular.module('dlp-library', ['ngResource']);
 var app = angular.module('app', ['filters']);
+var base = "http://api.darklordpotter.net";
 
 app.config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider) {
     $routeProvider.
@@ -16,8 +17,16 @@ function StoryController($scope, $http, $routeParams) {
 //    $scope.searchText = $routeParams.q;
 //    $scope.q = $routeParams.q;
 //    $scope.query = {};
+    if(typeof(Storage)!=="undefined") {
+        if (localStorage.getItem("stories")) {
+            $scope.stories = JSON.parse(localStorage.getItem("stories"));
+        }
+    }
 
-    $http.get('http://api.darklordpotter.net/stories').success(function(data, status) {
+    $http.get(base+'/stories').success(function(data, status) {
+        if(typeof(Storage)!=="undefined") {
+            localStorage.setItem("stories", JSON.stringify(data));
+        }
          $scope.stories = data;
         $scope.loaded = true;
     }).error(function(data, status) {
