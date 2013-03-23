@@ -1,6 +1,7 @@
 package net.darklordpotter.ml.extraction.filters
 
 import net.darklordpotter.ml.extraction.DataFilter
+import net.darklordpotter.ml.extraction.ExtractionContext
 
 import java.util.regex.Matcher
 import java.util.regex.Pattern
@@ -13,25 +14,25 @@ class BBTextDataFilter implements DataFilter {
     private static Pattern bbtxt = Pattern.compile("\\[[^\\]]+\\]")
     private static Pattern bbtxtUrl = Pattern.compile("\\[URL=\"([^\\]]+)\"\\]([^\\[]+)")
     private static Pattern bbtxtColor = Pattern.compile("\\[COLOR=\"([^\\]]+)\"\\]")
-    public String filter(String text) {
-        Matcher urlm = bbtxtUrl.matcher(text)
+    public ExtractionContext filter(ExtractionContext context) {
+        Matcher urlm = bbtxtUrl.matcher(context.pageText)
 
         if (urlm.find()) {
             String url = urlm.group(1)
             println url
-            text = urlm.replaceAll(url)
+            context.pageText = urlm.replaceAll(url)
         }
 
-        Matcher colorm = bbtxtColor.matcher(text)
+        Matcher colorm = bbtxtColor.matcher(context.pageText)
         if (colorm.find()) {
-            text = colorm.replaceAll("")
+            context.pageText = colorm.replaceAll("")
         }
 
-        Matcher m = bbtxt.matcher(text)
+        Matcher m = bbtxt.matcher(context.pageText)
         if (m.find()) {
-            text = m.replaceAll("")
+            context.pageText = m.replaceAll("")
         }
 
-        return text
+        return context
     }
 }

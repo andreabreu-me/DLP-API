@@ -1,7 +1,7 @@
 package net.darklordpotter.ml.extraction.extractors
 
-import net.darklordpotter.ml.core.Story
 import net.darklordpotter.ml.extraction.DataExtractor
+import net.darklordpotter.ml.extraction.ExtractionContext
 
 import java.util.regex.Matcher
 import java.util.regex.Pattern
@@ -12,14 +12,14 @@ import java.util.regex.Pattern
  */
 class SummaryExtractor implements DataExtractor {
     private static Pattern summary = Pattern.compile("Summary:(.*)")
-    Story apply(String pageText, Story result) {
-        Matcher m = summary.matcher(pageText)
+    ExtractionContext apply(ExtractionContext context) {
+        Matcher m = summary.matcher(context.pageText)
 
 
         if (m.find()) {
-            result.summary = m.group(1).trim()
+            context.result.summary = m.group(1).trim()
         }
 
-        result
+        context
     }
 }

@@ -5,8 +5,8 @@ import net.darklordpotter.ml.core.Story
 import net.darklordpotter.ml.extraction.extractors.UrlExtractor
 import net.darklordpotter.ml.extraction.providers.DLPDataProvider
 import net.darklordpotter.ml.extraction.sinks.MongoDBSink
-import net.darklordpotter.ml.extraction.utils.LevenshteinDistance
 
+import static net.darklordpotter.ml.extraction.utils.TimingUtil.timeIt
 /**
  * 2013-02-07
  * @author Michael Rose <elementation@gmail.com>
@@ -14,10 +14,6 @@ import net.darklordpotter.ml.extraction.utils.LevenshteinDistance
 class DatabaseExtractor {
     static final List<DataFilter> filters = ExtractorConfiguration.filters
     static final List<DataExtractor> extractors = ExtractorConfiguration.extractors
-
-
-    static Map<String, Integer> cardinality = new HashMap<>().withDefault { k -> 0 }
-
 
     protected static void setup() {
         for (StoryUrlPattern urlPattern : StoryUrlPattern.values()) {
@@ -29,35 +25,22 @@ class DatabaseExtractor {
 
         println "${resultSet.title.replace('&#8216;', '')}"
 
-        String pageText = resultSet.pagetext
+        ExtractionContext context = new ExtractionContext(resultSet)
+
         for (DataFilter filter: filters) {
-            if (pageText) {
-                pageText = filter.filter(pageText)
+             if (context) {
+                context = filter.filter(context)
             }
         }
 
-        Story result = new Story(resultSet.threadId)
         for (DataExtractor extractor : extractors) {
-            if (pageText) {
-                result = extractor.apply(pageText, result)
+            if (context.pageText) {
+                extractor.apply(context)
             }
         }
 
-        if (!result.title) result.title = resultSet.title.replace('&#8216;', '').replace(' - [a-zA-Z0-9]{1,4}', '').replaceAll("â€™", "'")
 
-        result.threadRating = (double)resultSet.votetotal / resultSet.votenum
-
-        if (resultSet.tags) {
-            List<String> tags = Splitter.on(",").trimResults().split(resultSet.tags) as List<String>
-
-            result.tags.addAll(tags)
-        }
-
-        result.posted = new Date(resultSet.dateline * 1000) // unix timestamp
-
-        cardinality[result.author]++
-
-        result
+        context.result
     }
 
     public static void main(String[] args) {
@@ -69,20 +52,20 @@ class DatabaseExtractor {
 
         DataProvider provider = new DLPDataProvider(args[0], args[1], args[2], args[3])
         DataSink sink = new MongoDBSink("dlp_library", "stories")
+        //DataSink sink = new PostgresSink()
 
-        provider.getData().each { m ->
-            Story story = extractStoryInformation(m)
-
-            sink.insertStory(story)
+        List<Story> extractedStories = timeIt("Extraction") {
+            provider.getData().collect { m ->
+                timeIt("------------") {
+                    extractStoryInformation(m)
+                }
+            }
         }
 
-        cardinality.sort { it.value }.findAll { it.value > 1 }.each {
-            println it
+        timeIt("Write to DB") {
+            for (Story s : extractedStories) {
+                sink.insertStory(s)
+            }
         }
-
-        List<String> names = cardinality.keySet().findAll { LevenshteinDistance.computeDistance(it, "Shezza 88") < 3 }.toList()
-        println names.collect {
-            cardinality.find { it2->it2.key == it }
-        }.sort{it.value}.last()
     }
 }

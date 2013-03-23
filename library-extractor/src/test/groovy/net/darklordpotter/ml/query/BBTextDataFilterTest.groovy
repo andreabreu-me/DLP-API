@@ -1,6 +1,7 @@
 package net.darklordpotter.ml.query
 
 import net.darklordpotter.ml.extraction.DataFilter
+import net.darklordpotter.ml.extraction.ExtractionContext
 import net.darklordpotter.ml.extraction.filters.BBTextDataFilter
 import org.junit.Before
 import org.junit.Test;
@@ -19,8 +20,9 @@ public class BBTextDataFilterTest {
 
     @Test
     public void testReplacesUrls() {
-        String text = "Link: [URL=\"http://www.fanfiction.net/s/7069833/1/Geminio\"]FF.net[/URL]"
+        ExtractionContext context = new ExtractionContext()
+        context.pageText = "Link: [URL=\"http://www.fanfiction.net/s/7069833/1/Geminio\"]FF.net[/URL]"
 
-        assert filter.filter(text) == "Link: http://www.fanfiction.net/s/7069833/1/Geminio"
+        assert filter.filter(context).pageText == "Link: http://www.fanfiction.net/s/7069833/1/Geminio"
     }
 }

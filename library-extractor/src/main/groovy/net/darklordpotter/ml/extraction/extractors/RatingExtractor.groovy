@@ -2,7 +2,7 @@ package net.darklordpotter.ml.extraction.extractors
 
 import net.darklordpotter.ml.extraction.DataExtractor
 import net.darklordpotter.ml.core.Rating
-import net.darklordpotter.ml.core.Story
+import net.darklordpotter.ml.extraction.ExtractionContext
 
 import java.util.regex.Matcher
 import java.util.regex.Pattern
@@ -13,20 +13,20 @@ import java.util.regex.Pattern
  */
 class RatingExtractor implements DataExtractor {
     private static Pattern rating = Pattern.compile("Rating:(.*)")
-    Story apply(String pageText, Story result) {
-        Matcher m = rating.matcher(pageText)
+    ExtractionContext apply(ExtractionContext context) {
+        Matcher m = rating.matcher(context.pageText)
 
         if (m.find()) {
             String ratingText = m.group(1).replaceAll("\\(([^\\)]+)\\)", "").replace("-", "").replace("+", "PLUS").trim()
             try {
-                result.rating = Enum.valueOf(Rating, ratingText)
+                context.result.rating = Enum.valueOf(Rating, ratingText)
             } catch (IllegalArgumentException e) {
-                result.rating = Rating.UNKNOWN
+                context.result.rating = Rating.UNKNOWN
             } catch (NullPointerException e) {
-                result.rating = Rating.UNKNOWN
+                context.result.rating = Rating.UNKNOWN
             }
         }
 
-        result
+        context
     }
 }

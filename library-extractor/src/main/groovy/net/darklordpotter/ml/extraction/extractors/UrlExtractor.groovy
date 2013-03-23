@@ -1,8 +1,8 @@
 package net.darklordpotter.ml.extraction.extractors
 
-import net.darklordpotter.ml.core.Story
 import net.darklordpotter.ml.core.Url
 import net.darklordpotter.ml.extraction.DataExtractor
+import net.darklordpotter.ml.extraction.ExtractionContext
 import net.darklordpotter.ml.extraction.StoryUrlPattern
 
 import java.util.regex.Matcher
@@ -18,12 +18,12 @@ class UrlExtractor implements DataExtractor {
         this.storyUrlPattern = storyUrlPattern
     }
 
-    Story apply(String pageText, Story result) {
-        Matcher matcher = storyUrlPattern.pattern.matcher(pageText)
+    ExtractionContext apply(ExtractionContext context) {
+        Matcher matcher = storyUrlPattern.pattern.matcher(context.pageText)
         if (matcher.find()) {
-            result.url << new Url(storyUrlPattern.name().toLowerCase(), matcher.group(0))
+            context.result.url << new Url(storyUrlPattern.name().toLowerCase(), matcher.group(0))
         }
 
-        result
+        context
     }
 }

@@ -22,7 +22,6 @@ class DLPDataProvider implements DataProvider {
 
     Iterable<Map> getData() {
         Sql h = Sql.newInstance("jdbc:mysql://${host}/${database}", user, pass)
-
         h.rows(dlpQuery) as Iterable<Map>
     }
 

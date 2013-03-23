@@ -1,7 +1,7 @@
 package net.darklordpotter.ml.extraction.extractors
 
 import net.darklordpotter.ml.extraction.DataExtractor
-import net.darklordpotter.ml.core.Story
+import net.darklordpotter.ml.extraction.ExtractionContext
 
 import java.util.regex.Matcher
 import java.util.regex.Pattern
@@ -12,14 +12,20 @@ import java.util.regex.Pattern
  */
 class TitleExtractor implements DataExtractor {
     private static Pattern title = Pattern.compile("Title:(.*)")
-    Story apply(String pageText, Story result) {
-        Matcher m = title.matcher(pageText)
+    ExtractionContext apply(ExtractionContext context) {
+        Matcher m = title.matcher(context.pageText)
 
 
         if (m.find()) {
-            result.title = m.group(1).trim()
+            context.result.title = m.group(1).trim()
         }
 
-        result
+        if (!context.result.title) {
+            context.result.title =
+                context.sourceSet.title.replace('&#8216;', '').replace(' - [a-zA-Z0-9]{1,4}', '').replaceAll("â€™", "'")
+        }
+
+
+        context
     }
 }

@@ -1,8 +1,11 @@
 package net.darklordpotter.ml.extraction
 
 import net.darklordpotter.ml.extraction.extractors.AuthorExtractor
+import net.darklordpotter.ml.extraction.extractors.DateExtractor
 import net.darklordpotter.ml.extraction.extractors.RatingExtractor
 import net.darklordpotter.ml.extraction.extractors.SummaryExtractor
+import net.darklordpotter.ml.extraction.extractors.TagExtractor
+import net.darklordpotter.ml.extraction.extractors.ThreadRatingExtractor
 import net.darklordpotter.ml.extraction.extractors.TitleExtractor
 import net.darklordpotter.ml.extraction.filters.BBTextDataFilter
 import net.darklordpotter.ml.extraction.filters.QuoteDataFilter
@@ -22,6 +25,9 @@ class ExtractorConfiguration {
                 ,new AuthorExtractor()
                 ,new RatingExtractor()
                 ,new SummaryExtractor()
+                ,new ThreadRatingExtractor()
+                ,new TagExtractor()
+                ,new DateExtractor()
         ]
     }
 }

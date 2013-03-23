@@ -7,5 +7,5 @@ import net.darklordpotter.ml.core.Story
  * @author Michael Rose <elementation@gmail.com>
  */
 public interface DataExtractor {
-    public Story apply(String pageText, Story result)
+    public ExtractionContext apply(ExtractionContext context)
 }

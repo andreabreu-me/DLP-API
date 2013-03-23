@@ -5,5 +5,5 @@ package net.darklordpotter.ml.extraction
  * @author Michael Rose <elementation@gmail.com>
  */
 public interface DataFilter {
-    public String filter(String text)
+    public ExtractionContext filter(ExtractionContext context)
 }
