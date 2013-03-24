@@ -1,10 +1,8 @@
 package net.darklordpotter.ml.extraction
 
-import com.google.common.base.Splitter
 import net.darklordpotter.ml.core.Story
 import net.darklordpotter.ml.extraction.extractors.UrlExtractor
 import net.darklordpotter.ml.extraction.providers.DLPDataProvider
-import net.darklordpotter.ml.extraction.sinks.MongoDBSink
 
 import static net.darklordpotter.ml.extraction.utils.TimingUtil.timeIt
 /**
@@ -51,7 +49,7 @@ class DatabaseExtractor {
         setup()
 
         DataProvider provider = new DLPDataProvider(args[0], args[1], args[2], args[3])
-        DataSink sink = new MongoDBSink("dlp_library", "stories")
+        //DataSink sink = new MongoDBSink("dlp_library", "stories")
         //DataSink sink = new PostgresSink()
 
         List<Story> extractedStories = timeIt("Extraction") {

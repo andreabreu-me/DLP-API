@@ -13,5 +13,5 @@ public class LibraryConfiguration extends Configuration {
     public String mongoDatabaseName = "dlp-library";
 
     @JsonProperty
-    public String mongoDsn = "mongodb://localhost/"+mongoDatabaseName;
+    public String mongoDsn = "mongodb://localhost/dlp-library";
 }
