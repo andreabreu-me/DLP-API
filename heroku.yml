@@ -5,5 +5,5 @@ mongoDsn: "mongodb://dlp-library:dlp-library@ds053607.mongolab.com:53607/heroku_
 
 http:
   connectorType: nonblocking
-  acceptorThreadPriorityOffset: 7
+  acceptorThreadPriorityOffset: 3
   acceptQueueSize: 16
