@@ -6,12 +6,16 @@ import com.mongodb.MongoClient
 import com.yammer.dropwizard.Service
 import com.yammer.dropwizard.config.Bootstrap
 import com.yammer.dropwizard.config.Environment
+import com.yammer.dropwizard.jdbi.DBIFactory
 import net.darklordpotter.ml.query.core.MongoClientManager
 import net.darklordpotter.ml.query.healthcheck.MongoHealthCheck
+import net.darklordpotter.ml.query.jdbi.PostDAO
 import net.darklordpotter.ml.query.resources.FFNResource
 import net.darklordpotter.ml.query.resources.MainResource
 import net.darklordpotter.ml.query.resources.StoryResource
 import net.darklordpotter.ml.query.resources.TagsResource
+import net.darklordpotter.ml.query.resources.WbaResource
+import org.skife.jdbi.v2.DBI
 
 import java.util.concurrent.TimeUnit
 
@@ -27,6 +31,10 @@ class LibraryService extends Service<LibraryConfiguration> {
 
     @Override
     void run(LibraryConfiguration configuration, Environment environment) throws Exception {
+        final DBIFactory factory = new DBIFactory();
+        final DBI jdbi = factory.build(environment, configuration.getDatabaseConfiguration(), "mysql");
+        final PostDAO dao = jdbi.onDemand(PostDAO.class);
+
         MongoClientManager mongoClientManager = new MongoClientManager(configuration.mongoDsn)
 
         final MongoClient client = mongoClientManager.getClient()
@@ -38,6 +46,7 @@ class LibraryService extends Service<LibraryConfiguration> {
         environment.addFilter(new RateLimitingFilter(5, 5, TimeUnit.SECONDS), "/ffn/*")
         environment.addResource(new MainResource())
         environment.addResource(new StoryResource(collection))
+        environment.addResource(new WbaResource(dao))
         environment.addResource(new TagsResource(collection))
         environment.addResource(new FFNResource())
         environment.addHealthCheck(new MongoHealthCheck(client))

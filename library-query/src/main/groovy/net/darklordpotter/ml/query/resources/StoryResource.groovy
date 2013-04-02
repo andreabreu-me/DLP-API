@@ -1,14 +1,15 @@
 package net.darklordpotter.ml.query.resources
 
 import com.google.common.base.Splitter
-import com.mongodb.*
+import com.mongodb.BasicDBObject
+import com.mongodb.DBCollection
+import com.mongodb.DBObject
 import com.yammer.metrics.annotation.Metered
 import net.darklordpotter.ml.core.Story
 import net.vz.mongodb.jackson.DBQuery
 import net.vz.mongodb.jackson.JacksonDBCollection
 
 import javax.ws.rs.*
-import javax.ws.rs.core.MediaType
 import javax.ws.rs.core.Response
 import java.util.regex.Pattern
 
