@@ -2,6 +2,10 @@ package net.darklordpotter.ml.query;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.yammer.dropwizard.config.Configuration;
+import com.yammer.dropwizard.db.DatabaseConfiguration;
+
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
 /**
  * 2013-03-23
@@ -10,8 +14,17 @@ import com.yammer.dropwizard.config.Configuration;
  */
 public class LibraryConfiguration extends Configuration {
     @JsonProperty
-    public String mongoDatabaseName = "dlp-library";
+    public String mongoDatabaseName = "dlp_library";
 
     @JsonProperty
-    public String mongoDsn = "mongodb://localhost/dlp-library";
+    public String mongoDsn = "mongodb://localhost/dlp_library";
+
+    @Valid
+    @NotNull
+    @JsonProperty
+    private DatabaseConfiguration database = new DatabaseConfiguration();
+
+    public DatabaseConfiguration getDatabaseConfiguration() {
+        return database;
+    }
 }
