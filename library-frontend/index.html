@@ -33,18 +33,19 @@
         <script src="components/angular/angular.js"></script>
         <script src="js/main-angular.js"></script>
     </head>
-    <body ng-app="app">
+    <body ng-app="app" ng-controller="StoryController">
         <!--[if lt IE 7]>
             <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
         <![endif]-->
-        <div ng-controller="StoryController">
+        <div>
             <div class="row masthead">
                 <h1>DLP Library Stories</h1>
                 <div class="search">
                     <form id="search" autocomplete="off">
                         <input class="input-xxlarge" type="text" data-provide="typeahead" class="typeahead" placeholder="Search" ng-model="query.$" />
                         <input  name="tags" type="text" data-provide="typeahead" class="typeahead" placeholder="Tag(s)" ng-model="query.tags" />
-                        <select data-ng-model="order_predicate" data-ng-init="order_predicate='-threadRating'">
+                        <select data-ng-model="order_predicate" data-ng-init="order_predicate='-adjustedThreadRating'">
+                            <option value="-adjustedThreadRating">Rating (Adjusted)</option>
                             <option value="-threadRating">Rating</option>
                             <option value="title">Title</option>
                             <option value="author">Author</option>
@@ -72,7 +73,16 @@
                     <strong>Error!</strong> Server returned error {{error}}
                 </div>
             </span>
-            <article ng-repeat="story in stories | filter:query | orderBy:order_predicate | limitTo:50" ng-show="loaded" data-story-id="{{story.threadId}}">
+            <div class="pagination-right">
+                <button ng-disabled="currentPage == 0" ng-click="currentPage=currentPage-1">
+                    Previous
+                </button>
+                {{currentPage*pageSize+1}} to {{pageElementTop()}} of {{stories.length}}
+                <button ng-disabled="currentPage >= stories.length/pageSize - 1" ng-click="currentPage=currentPage+1">
+                    Next
+                </button>
+            </div>
+            <article ng-repeat="story in stories | filter:query | orderBy:order_predicate | startFrom:currentPage*pageSize | limitTo:pageSize" ng-show="loaded" data-story-id="{{story.threadId}}">
                 <div class="row">
                     <div class="span12 border-bottom2">
                         <a class="story-item-title" href="https://forums.darklordpotter.net/showthread.php?threadid={{story.threadId}}">
@@ -94,6 +104,15 @@
                     </div>
                 </div>
             </article>
+            <div class="pagination-right">
+                <button ng-disabled="currentPage == 0" ng-click="currentPage=currentPage-1">
+                    Previous
+                </button>
+                {{currentPage*pageSize+1}} to {{pageElementTop()}} of {{stories.length}}
+                <button ng-disabled="currentPage >= stories.length/pageSize - 1" ng-click="currentPage=currentPage+1">
+                    Next
+                </button>
+            </div>
         </script>
         <script id="tags.html" type="text/ng-template">
             <h2>Top 20 Tags</h2>

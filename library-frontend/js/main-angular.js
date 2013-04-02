@@ -11,12 +11,31 @@ app.config(['$routeProvider', '$locationProvider', function($routeProvider, $loc
     //$locationProvider.html5Mode( true );
 }]);
 
+app.filter('startFrom', function() {
+    return function(input, start) {
+        start = +start; //parse to int
+        return input.slice(start);
+    }
+});
+
 
 function StoryController($scope, $http, $routeParams) {
     $scope.loaded = false;
 //    $scope.searchText = $routeParams.q;
 //    $scope.q = $routeParams.q;
 //    $scope.query = {};
+
+
+    $scope.currentPage = 0;
+    $scope.pageSize = 50;
+    $scope.stories = [];
+    $scope.numberOfPages=function(){
+        return Math.ceil($scope.stories.length/$scope.pageSize);
+    };
+    $scope.pageElementTop=function() {
+        return Math.min($scope.stories.length, ($scope.currentPage+1)*$scope.pageSize)
+    }
+
     if(typeof(Storage)!=="undefined") {
         if (localStorage.getItem("stories")) {
             $scope.stories = JSON.parse(localStorage.getItem("stories"));
