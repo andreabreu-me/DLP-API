@@ -31,8 +31,8 @@ class StoryResource {
     @Metered
     Iterator<Story> getAllStories(
         @QueryParam("ratingThreshold") Double threshold,
-        @QueryParam("sortField") String sortField,
-        @QueryParam("sortDirection") String sortDirection,
+        @DefaultValue("adjustedThreadRating") @QueryParam("sortField") String sortField,
+        @DefaultValue("DESC") @QueryParam("sortDirection") String sortDirection,
         @QueryParam("title") String title
     ) {
         DBObject thresholdQuery
