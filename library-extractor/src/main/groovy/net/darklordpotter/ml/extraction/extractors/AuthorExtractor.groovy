@@ -20,6 +20,14 @@ class AuthorExtractor implements DataExtractor {
             context.result.author = m.group(1).replaceAll("\\(([^\\)]+)\\)", "").trim()
         }
 
+        if (context.result.author.contains("http://")) {
+            context.result.author = context.result.author.split("/").last()?.replaceAll("_", " ")
+        }
+
+        if (context.result.author.trim().isEmpty()) {
+            //context.result.title
+        }
+
         context
     }
 }
