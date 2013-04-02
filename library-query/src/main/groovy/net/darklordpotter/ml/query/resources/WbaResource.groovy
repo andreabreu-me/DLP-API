@@ -16,7 +16,7 @@ import javax.ws.rs.core.Response
 
 /**
  * 2013-04-02
- * @author Michael Rose <michael@fullcontact.com>
+ * @author Michael Rose <elementation@gmail.com>
  */
 @Produces("application/json; charset=utf8")
 @Path("/wba")
