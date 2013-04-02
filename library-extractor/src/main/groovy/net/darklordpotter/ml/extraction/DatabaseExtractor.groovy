@@ -3,6 +3,7 @@ package net.darklordpotter.ml.extraction
 import net.darklordpotter.ml.core.Story
 import net.darklordpotter.ml.extraction.extractors.UrlExtractor
 import net.darklordpotter.ml.extraction.providers.DLPDataProvider
+import net.darklordpotter.ml.extraction.sinks.MongoDBSink
 
 import static net.darklordpotter.ml.extraction.utils.TimingUtil.timeIt
 /**
@@ -26,7 +27,7 @@ class DatabaseExtractor {
         ExtractionContext context = new ExtractionContext(resultSet)
 
         for (DataFilter filter: filters) {
-             if (context) {
+            if (context) {
                 context = filter.filter(context)
             }
         }
@@ -37,6 +38,7 @@ class DatabaseExtractor {
             }
         }
 
+        println "(${resultSet.threadId}) ${context.result.title} by ${context.result.author}"
 
         context.result
     }
@@ -49,7 +51,7 @@ class DatabaseExtractor {
         setup()
 
         DataProvider provider = new DLPDataProvider(args[0], args[1], args[2], args[3])
-        //DataSink sink = new MongoDBSink("dlp_library", "stories")
+        DataSink sink = new MongoDBSink("dlp_library", "stories")
         //DataSink sink = new PostgresSink()
 
         List<Story> extractedStories = timeIt("Extraction") {
