@@ -16,9 +16,9 @@
 //import java.sql.SQLException
 //
 ///**
-// * 2013-03-10
-// * @author Michael Rose <michael@fullcontact.com>
-// */
+//* 2013-03-10
+//* @author Michael Rose <elementation@gmail.com>
+//*/
 //class PostgresSink implements DataSink {
 //    StoryDto storyInterface
 //
@@ -26,6 +26,7 @@
 //        PGPoolingDataSource dataSource = new PGPoolingDataSource()
 //        dataSource.setDatabaseName("library_dlp")
 //        DBI dbi = new DBI(dataSource)
+//        dbi.registerArgumentFactory(new PostgresStringSetArgumentFactory())
 //
 //        storyInterface = dbi.onDemand(StoryDto)
 //    }
@@ -38,55 +39,8 @@
 //
 //
 //interface StoryDto {
-//    @SqlUpdate("INSERT INTO stories (id, title) VALUES (:threadIdLong, :title)")
+//    @SqlUpdate("INSERT INTO stories\n" +
+//            "(id, title, tags) " +
+//            "VALUES (:threadIdLong, :title, :tags)")
 //    void insertStory(@BindBean Story story)
-//}
-//
-//public class PostgresIntegerArrayArgumentFactory implements ArgumentFactory<SqlArray<Integer>>
-//{
-//    public boolean accepts(Class<?> expectedType, Object value, StatementContext ctx)
-//    {
-//        return value instanceof SqlArray && ((SqlArray)value).getType().isAssignableFrom(Integer.class);
-//    }
-//
-//    public Argument build(Class<?> expectedType, final SqlArray<Integer> value, StatementContext ctx)
-//    {
-//        return new Argument() {
-//            public void apply(int position, PreparedStatement statement, StatementContext ctx) throws SQLException {
-//                // in postgres no need to (and in fact cannot) free arrays
-//                Array ary = ctx.getConnection()
-//                        .createArrayOf("integer", value.getElements());
-//                statement.setArray(position, ary);
-//            }
-//        };
-//    }
-//}
-//
-//public class SqlArray<T>
-//{
-//    private final Object[] elements;
-//    private final Class<T> type;
-//
-//    public SqlArray(Class<T> type, Collection<T> elements) {
-//        this.elements = Iterables.toArray(elements, Object.class);
-//        this.type = type;
-//    }
-//
-//    public static <T> SqlArray<T> arrayOf(Class<T> type, T... elements) {
-//        return new SqlArray<T>(type, asList(elements));
-//    }
-//
-//    public static <T> SqlArray<T> arrayOf(Class<T> type, Iterable<T> elements) {
-//        return new SqlArray<T>(type, elements);
-//    }
-//
-//    public Object[] getElements()
-//    {
-//        return elements;
-//    }
-//
-//    public Class<T> getType()
-//    {
-//        return type;
-//    }
 //}

@@ -4,7 +4,7 @@ import net.darklordpotter.ml.core.Story
 
 /**
  * 2013-03-06
- * @author Michael Rose <michael@fullcontact.com>
+ * @author Michael Rose <elementation@gmail.com>
  */
 class ExtractionContext {
     Map sourceSet

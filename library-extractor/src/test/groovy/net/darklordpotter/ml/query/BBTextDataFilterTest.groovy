@@ -9,7 +9,7 @@ import org.junit.Test;
 /**
  * 2013-02-26
  *
- * @author Michael Rose <michael@fullcontact.com>
+ * @author Michael Rose <elementation@gmail.com>
  */
 public class BBTextDataFilterTest {
     DataFilter filter

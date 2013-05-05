@@ -2,7 +2,7 @@ package net.darklordpotter.ml.extraction.utils
 
 /**
  * 2013-03-05
- * @author Michael Rose <michael@fullcontact.com>
+ * @author Michael Rose <elementation@gmail.com>
  */
 class TimingUtil {
     public static <V> V timeIt(String type = "", Closure<V> cl) {

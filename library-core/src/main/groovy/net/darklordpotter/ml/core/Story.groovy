@@ -23,6 +23,10 @@ public class Story {
         return threadId.toString();
     }
 
+    public Long getThreadIdLong() {
+        return threadId;
+    }
+
     @Id
     public void setThreadId(String id) {
         this.threadId = Long.parseLong(id);
