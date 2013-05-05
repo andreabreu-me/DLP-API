@@ -3,7 +3,7 @@ package net.darklordpotter.ml.query.api;
 /**
  * 2013-03-27
  *
- * @author Michael Rose <michael@fullcontact.com>
+ * @author Michael Rose <elementation@gmail.com>
  */
 public class Post {
     Long postId;

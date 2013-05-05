@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * 2013-03-27
  *
- * @author Michael Rose <michael@fullcontact.com>
+ * @author Michael Rose <elementation@gmail.com>
  */
 @RegisterMapper(PostMapper.class)
 public interface PostDAO {

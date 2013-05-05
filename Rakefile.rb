@@ -20,14 +20,14 @@ namespace "deploy" do
     task :extractor => [:package] do
         remote_dir = "/home/darklord/api"
 
-        sh "rsync library-extractor/target/library-extractor-1.0-SNAPSHOT.jar #{user}@#{host}:#{remote_dir}/library-extractor.jar"
+        sh "rsync -avP library-extractor/target/library-extractor-1.0-SNAPSHOT.jar #{user}@#{host}:#{remote_dir}/library-extractor.jar"
     end
 
     desc "Deploy the Library REST API (non-rolling)"
     task :api => [:package] do
         remote_dir = "/home/darklord/api"
 
-        sh "rsync library-query/target/library-query-1.0-SNAPSHOT.jar #{host}:#{remote_dir}/library-query.jar"
+        sh "rsync -avP library-query/target/library-query-1.0-SNAPSHOT.jar #{host}:#{remote_dir}/library-query.jar"
 
         Net::SSH.start(host, user, options) do |ssh|
             puts ssh.exec! 'supervisorctl restart library-api'

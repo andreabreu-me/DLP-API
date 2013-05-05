@@ -7,7 +7,7 @@ import com.yammer.metrics.core.HealthCheck;
 /**
  * 2013-03-23
  *
- * @author Michael Rose <michael@fullcontact.com>
+ * @author Michael Rose <elementation@gmail.com>
  */
 public class MongoHealthCheck extends HealthCheck {
     private final MongoClient client;

@@ -10,7 +10,7 @@ import java.sql.SQLException;
 /**
  * 2013-03-27
  *
- * @author Michael Rose <michael@fullcontact.com>
+ * @author Michael Rose <elementation@gmail.com>
  */
 public class PostMapper implements ResultSetMapper<Post> {
     public Post map(int i, ResultSet resultSet, StatementContext statementContext) throws SQLException {
