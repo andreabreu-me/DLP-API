@@ -1,26 +1,30 @@
 package net.darklordpotter.ml.query.resources;
 
+import ch.lambdaj.function.convert.Converter;
 import com.google.common.base.Function;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Ordering;
-import com.mongodb.*;
-import groovy.lang.Closure;
+import com.mongodb.BasicDBObject;
+import com.mongodb.BasicDBObjectBuilder;
+import com.mongodb.DBCollection;
+import com.mongodb.DBObject;
 import net.darklordpotter.ml.core.Story;
 import net.darklordpotter.ml.query.api.TagResult;
 import net.vz.mongodb.jackson.DBQuery;
 import net.vz.mongodb.jackson.JacksonDBCollection;
 import org.codehaus.groovy.runtime.DefaultGroovyMethods;
+import org.hamcrest.Matchers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.Nullable;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import java.util.List;
+
+import static ch.lambdaj.Lambda.*;
 
 /**
  * 2013-02-09
@@ -33,12 +37,6 @@ public class TagsResource {
     private final DBCollection libraryCollection;
     private final JacksonDBCollection<Story, String> jacksonDBCollection;
     private final Logger log = LoggerFactory.getLogger(TagsResource.class);
-    private final Ordering<TagResult> tagResultOrdering = new Ordering<TagResult>() {
-        @Override
-        public int compare(TagResult left, TagResult right) {
-            return left.getCount().compareTo(right.getCount());
-        }
-    };
 
     public TagsResource(final DBCollection libraryCollection) {
         this.libraryCollection = libraryCollection;
@@ -53,22 +51,16 @@ public class TagsResource {
     protected List<TagResult> getTags() {
         Iterable<DBObject> objects = tagAggregation();
 
-        log.info(objects.toString());
-
-        Iterable<TagResult> unsortedTags = Iterables.transform(objects, new Function<DBObject, TagResult>() {
+        List<TagResult> ascSortedTags = convert(objects, new Converter<DBObject, TagResult>() {
             @Override
-            public TagResult apply(DBObject input) {
-                if (input != null)
-                    return new TagResult((String)input.get("_id"), (long)(int)input.get("count"));
-                else return null;
+            public TagResult convert(DBObject input) {
+                return new TagResult((String) input.get("_id"), (long) (int) input.get("count"));
             }
         });
 
-        log.info(unsortedTags.toString());
+        ascSortedTags = sort(ascSortedTags, on(TagResult.class).getCount());
 
-
-
-        return tagResultOrdering.reverse().sortedCopy(unsortedTags);
+        return Lists.reverse(ascSortedTags);
     }
 
     // db.stories.aggregate(   { $project : {      author : 1,      tags : 1,   } },   { $unwind : "$tags" },   { $group : {      _id : "$tags",      count : { $sum : 1 }   } } );
