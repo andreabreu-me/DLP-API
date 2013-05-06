@@ -31,4 +31,13 @@ public class TagResult {
     public void setCount(Long count) {
         this.count = count;
     }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("TagResult{");
+        sb.append("tag='").append(tag).append('\'');
+        sb.append(", count=").append(count);
+        sb.append('}');
+        return sb.toString();
+    }
 }
