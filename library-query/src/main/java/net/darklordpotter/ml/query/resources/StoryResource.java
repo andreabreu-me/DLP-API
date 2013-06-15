@@ -1,5 +1,6 @@
 package net.darklordpotter.ml.query.resources;
 
+import com.google.common.base.Function;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
@@ -14,10 +15,12 @@ import org.codehaus.groovy.runtime.DefaultGroovyMethods;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nullable;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 import java.util.regex.Pattern;
 
 /**
@@ -66,10 +69,29 @@ public class StoryResource {
     public Story getStory(@PathParam("storyId") Long storyId) {
         Story story = jacksonDBCollection.findOneById(storyId.toString());
 
-        if (!DefaultGroovyMethods.asBoolean(story))
+        if (story == null)
             throw new WebApplicationException(Response.Status.NOT_FOUND);
 
         return story;
+    }
+
+    @GET
+    @Metered
+    @Path("/multiget/{query}")
+    public Iterator<Story> getMultipleStories(@PathParam("query") String query) {
+        Splitter s = Splitter.on(",").omitEmptyStrings().trimResults().limit(50);
+
+        List<Long> multiGet = Lists.newArrayList(Iterables.transform(s.split(query), new Function<String, Long>() {
+            @Nullable
+            @Override
+            public Long apply(@Nullable String input) {
+                return Long.parseLong(input);
+            }
+        }));
+
+        log.info("Returning information about {}", multiGet);
+
+        return jacksonDBCollection.find(DBQuery.in("_id", Lists.newArrayList(s.split(query))));
     }
 
     @GET

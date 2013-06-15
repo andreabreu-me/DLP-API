@@ -9,6 +9,7 @@ import com.yammer.dropwizard.config.Environment;
 import com.yammer.dropwizard.jdbi.DBIFactory;
 import net.darklordpotter.ml.query.core.MongoClientManager;
 import net.darklordpotter.ml.query.healthcheck.MongoHealthCheck;
+import net.darklordpotter.ml.query.jdbi.AuthDAO;
 import net.darklordpotter.ml.query.jdbi.PostDAO;
 import net.darklordpotter.ml.query.resources.*;
 import org.skife.jdbi.v2.DBI;
@@ -31,6 +32,7 @@ public class LibraryService extends Service<LibraryConfiguration> {
         final DBIFactory factory = new DBIFactory();
         final DBI jdbi = factory.build(environment, configuration.getDatabaseConfiguration(), "mysql");
         final PostDAO dao = jdbi.onDemand(PostDAO.class);
+        final AuthDAO authDAO = jdbi.onDemand(AuthDAO.class);
 
         final MongoClientManager mongoClientManager = new MongoClientManager(configuration.mongoHost, configuration.mongoPort);
 
@@ -44,9 +46,11 @@ public class LibraryService extends Service<LibraryConfiguration> {
         environment.addFilter(new RateLimitingFilter(5, 5, TimeUnit.SECONDS), "/ffn/*");
         environment.addResource(new MainResource());
         environment.addResource(new StoryResource(collection));
+        environment.addResource(new PostResource(dao));
         environment.addResource(new WbaResource(dao));
         environment.addResource(new TagsResource(collection));
         environment.addResource(new FFNResource());
+        environment.addResource(new AuthResource(authDAO));
         environment.addHealthCheck(new MongoHealthCheck(client));
     }
 

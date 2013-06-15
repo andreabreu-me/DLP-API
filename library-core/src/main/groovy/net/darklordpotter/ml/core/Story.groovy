@@ -121,7 +121,12 @@ public class Story {
         this.adjustedThreadRating = adjustedThreadRating
     }
 
+    void setThreadIdLong(Long threadIdLong) {
+        this.threadIdLong = threadIdLong
+    }
+
     private Long threadId = 0l;
+    private Long threadIdLong = 0l;
     private String title = "";
     private String author = "";
     private String summary = "";

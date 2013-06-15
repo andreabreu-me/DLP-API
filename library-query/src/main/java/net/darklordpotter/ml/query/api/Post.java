@@ -8,11 +8,13 @@ package net.darklordpotter.ml.query.api;
 public class Post {
     Long postId;
     Long threadId;
+    String threadTitle;
     String username;
     Long userId;
     String title;
     Long dateline;
     String pageText;
+    Integer avatarRevision;
 
     public Long getPostId() {
         return postId;
@@ -28,6 +30,14 @@ public class Post {
 
     public void setThreadId(Long threadId) {
         this.threadId = threadId;
+    }
+
+    public String getThreadTitle() {
+        return threadTitle;
+    }
+
+    public void setThreadTitle(String threadTitle) {
+        this.threadTitle = threadTitle;
     }
 
     public String getUsername() {
@@ -68,5 +78,13 @@ public class Post {
 
     public void setPageText(String pageText) {
         this.pageText = pageText;
+    }
+
+    public Integer getAvatarRevision() {
+        return avatarRevision;
+    }
+
+    public void setAvatarRevision(Integer avatarRevision) {
+        this.avatarRevision = avatarRevision;
     }
 }

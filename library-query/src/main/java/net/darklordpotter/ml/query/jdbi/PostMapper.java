@@ -18,10 +18,14 @@ public class PostMapper implements ResultSetMapper<Post> {
         p.setPostId(resultSet.getLong("postid"));
         p.setThreadId(resultSet.getLong("threadid"));
         p.setUsername(resultSet.getString("username"));
-        p.setUserId(resultSet.getLong("threadid"));
+        p.setUserId(resultSet.getLong("userid"));
         p.setTitle(resultSet.getString("title"));
         p.setDateline(resultSet.getLong("dateline"));
         p.setPageText(resultSet.getString("pagetext"));
+
+        p.setThreadTitle(resultSet.getString("threadTitle"));
+        p.setAvatarRevision(resultSet.getInt("avatarRevision"));
+
         return p;
     }
 }
