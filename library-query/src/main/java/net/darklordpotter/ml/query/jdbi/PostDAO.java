@@ -35,4 +35,16 @@ public interface PostDAO {
             "ORDER BY postid DESC\n" +
             "LIMIT :skip,:limit")
     public List<Post> getLatestPosts(@Bind("skip") Integer skip, @Bind("limit") Integer limit);
+
+    @SqlQuery("SELECT p.*,u.avatarRevision,t.title as threadTitle FROM post p \n" +
+            "STRAIGHT_JOIN thread t\n" +
+            "ON t.threadid = p.threadid\n" +
+            "LEFT JOIN user u\n" +
+            "USING (userid)\n" +
+            "WHERE\n" +
+            "t.forumid NOT IN (21, 98, 51, 138)\n" +
+            "p.post_id > lastId" +
+            "ORDER BY postid DESC\n" +
+            "LIMIT limit")
+    public List<Post> getLatestPostsAfterId(@Bind("lastId") Long lastId, @Bind("limit") Integer limit);
 }
