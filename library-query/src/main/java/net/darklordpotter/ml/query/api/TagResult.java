@@ -3,7 +3,7 @@ package net.darklordpotter.ml.query.api;
 /**
  * 2013-02-11
  *
- * @author Michael Rose <elementation@gmail.com>
+ * @author Michael Rose <lordravenclaw@patronuscharm.net>
  */
 public class TagResult {
     private String tag;

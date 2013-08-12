@@ -6,7 +6,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 /**
  * 2013-06-12
  *
- * @author Michael Rose <michael@fullcontact.com>
+ * @author Michael Rose <lordravenclaw@patronuscharm.net>
  */
 public class UserCredential {
     @NotEmpty

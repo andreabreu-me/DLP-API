@@ -3,7 +3,7 @@ package net.darklordpotter.ml.query.api;
 /**
  * 2013-03-27
  *
- * @author Michael Rose <elementation@gmail.com>
+ * @author Michael Rose <lordravenclaw@patronuscharm.net>
  */
 public class Post {
     Long postId;
@@ -11,6 +11,7 @@ public class Post {
     String threadTitle;
     String username;
     Long userId;
+    String userTitle;
     String title;
     Long dateline;
     String pageText;
@@ -54,6 +55,14 @@ public class Post {
 
     public void setUserId(Long userId) {
         this.userId = userId;
+    }
+
+    public String getUserTitle() {
+        return userTitle;
+    }
+
+    public void setUserTitle(String userTitle) {
+        this.userTitle = userTitle;
     }
 
     public String getTitle() {

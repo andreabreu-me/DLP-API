@@ -24,7 +24,7 @@ import net.darklordpotter.ml.extraction.DataSink
 
 /**
  * 2013-04-05
- * @author Michael Rose <michael@fullcontact.com>
+ * @author Michael Rose <lordravenclaw@patronuscharm.net>
  */
 class TinkerPopSink implements DataSink {
     Neo4jGraph g

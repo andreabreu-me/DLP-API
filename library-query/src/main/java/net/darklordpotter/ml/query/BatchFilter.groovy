@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletResponse
 
 /**
  * 2013-01-06
- * @author Michael Rose <elementation@gmail.com>
+ * @author Michael Rose <lordravenclaw@patronuscharm.net>
  */
 class BatchFilter implements Filter {
     ObjectMapper objectMapper

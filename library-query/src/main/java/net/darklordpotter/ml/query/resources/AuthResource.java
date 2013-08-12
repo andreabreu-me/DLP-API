@@ -12,7 +12,7 @@ import javax.ws.rs.WebApplicationException;
 /**
  * 2013-06-12
  *
- * @author Michael Rose <michael@fullcontact.com>
+ * @author Michael Rose <lordravenclaw@patronuscharm.net>
  */
 @Path("/v1/auth")
 @Produces("application/json; charset=utf-8")

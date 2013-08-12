@@ -1,11 +1,9 @@
 package net.darklordpotter.ml.query.api;
 
-import com.google.common.base.Splitter;
-
 /**
  * 2013-06-15
  *
- * @author Michael Rose <michael@fullcontact.com>
+ * @author Michael Rose <lordravenclaw@patronuscharm.net>
  */
 public class Forum {
     private long forumId;
@@ -91,9 +89,17 @@ public class Forum {
         this.threadCount = threadCount;
     }
 
-    Splitter commaSplitter = Splitter.on(',').trimResults().omitEmptyStrings();
     public String getParentlist() {
         return this.parentlist;
+    }
+
+    public long getDepth() {
+        if (this.parentlist != null)  {
+            int oldLen = this.parentlist.length();
+            return oldLen - this.parentlist.replace(",", "").length();
+        }
+
+        return 0;
     }
 
     public void setParentlist(String parentlist) {

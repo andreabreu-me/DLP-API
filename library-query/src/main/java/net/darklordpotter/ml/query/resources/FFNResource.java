@@ -32,7 +32,7 @@ import java.util.regex.Pattern;
 /**
  * 2013-02-19
  *
- * @author Michael Rose <elementation@gmail.com>
+ * @author Michael Rose <lordravenclaw@patronuscharm.net>
  */
 @Path("/ffn/{storyId}/{chapterId}")
 @Produces(MediaType.APPLICATION_JSON)

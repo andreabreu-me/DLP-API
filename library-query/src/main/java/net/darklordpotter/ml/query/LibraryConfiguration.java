@@ -1,6 +1,7 @@
 package net.darklordpotter.ml.query;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.common.cache.CacheBuilderSpec;
 import com.yammer.dropwizard.config.Configuration;
 import com.yammer.dropwizard.db.DatabaseConfiguration;
 
@@ -12,7 +13,7 @@ import javax.validation.constraints.NotNull;
 /**
  * 2013-03-23
  *
- * @author Michael Rose <elementation@gmail.com>
+ * @author Michael Rose <lordravenclaw@patronuscharm.net>
  */
 public class LibraryConfiguration extends Configuration {
     @JsonProperty
@@ -30,6 +31,13 @@ public class LibraryConfiguration extends Configuration {
     @NotNull
     @JsonProperty
     private DatabaseConfiguration database = new DatabaseConfiguration();
+
+    @JsonProperty
+    public CacheBuilderSpec authenticationCachePolicy;
+
+    public CacheBuilderSpec getAuthenticationCachePolicy() {
+        return authenticationCachePolicy;
+    }
 
     public DatabaseConfiguration getDatabaseConfiguration() {
         return database;

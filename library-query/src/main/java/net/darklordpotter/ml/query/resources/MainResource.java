@@ -11,7 +11,7 @@ import java.util.LinkedHashMap;
 /**
  * 2013-02-25
  *
- * @author Michael Rose <elementation@gmail.com>
+ * @author Michael Rose <lordravenclaw@patronuscharm.net>
  */
 @Path("/")
 public class MainResource {

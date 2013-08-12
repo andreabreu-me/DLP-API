@@ -9,7 +9,7 @@ import java.io.IOException;
 /**
  * 2013-01-06
  *
- * @author Michael Rose <elementation@gmail.com>
+ * @author Michael Rose <lordravenclaw@patronuscharm.net>
  */
 public class CORSFilter implements Filter {
     @Override

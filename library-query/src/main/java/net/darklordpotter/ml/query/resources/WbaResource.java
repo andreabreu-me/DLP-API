@@ -16,7 +16,7 @@ import java.util.List;
 /**
  * 2013-04-02
  *
- * @author Michael Rose <elementation@gmail.com>
+ * @author Michael Rose <lordravenclaw@patronuscharm.net>
  */
 @Produces("application/json; charset=utf8")
 @Path("/wba")

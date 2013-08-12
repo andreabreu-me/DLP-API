@@ -56,6 +56,16 @@
             <artifactId>lambdaj</artifactId>
             <version>2.3.3</version>
         </dependency>
+        <dependency>
+            <groupId>com.hubspot.dropwizard</groupId>
+            <artifactId>dropwizard-guice</artifactId>
+            <version>0.6.1.6</version>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>0.11.8</version>
+        </dependency>
     </dependencies>
 
     <build>

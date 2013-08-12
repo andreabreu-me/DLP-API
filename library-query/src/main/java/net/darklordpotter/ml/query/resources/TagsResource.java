@@ -29,7 +29,7 @@ import static ch.lambdaj.Lambda.*;
 /**
  * 2013-02-09
  *
- * @author Michael Rose <elementation@gmail.com>
+ * @author Michael Rose <lordravenclaw@patronuscharm.net>
  */
 @Path("/tags")
 @Produces("application/json; charset=utf-8")

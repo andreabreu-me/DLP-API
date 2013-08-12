@@ -35,3 +35,5 @@ database:
 
   # the maximum lifetime of an idle connection
   closeConnectionIfIdleFor: 1 minute
+
+authenticationCachePolicy: maximumSize=10000, expireAfterAccess=10m
