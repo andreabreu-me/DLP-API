@@ -36,21 +36,23 @@ function StoryController($scope, $http, $routeParams) {
         return Math.min($scope.stories.length, ($scope.currentPage+1)*$scope.pageSize)
     }
 
-    if(typeof(Storage)!=="undefined") {
-        if (localStorage.getItem("stories")) {
-            $scope.stories = JSON.parse(localStorage.getItem("stories"));
-        }
-    }
-
+//    if(typeof(Storage)!=="undefined") {
+//        if (localStorage.getItem("stories")) {
+//            $scope.stories = JSON.parse(localStorage.getItem("stories"));
+//        }
+//    }
+    NProgress.start();
     $http.get(base+'/stories').success(function(data, status) {
         if(typeof(Storage)!=="undefined") {
             localStorage.setItem("stories", JSON.stringify(data));
         }
          $scope.stories = data;
         $scope.loaded = true;
+        NProgress.done();
     }).error(function(data, status) {
         $scope.loaded = true;
         $scope.error = status;
+                NProgress.done();
     });
 
     $scope.setSearchTag = function(tag) {
