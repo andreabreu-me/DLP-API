@@ -7,6 +7,7 @@ import com.google.common.collect.Lists;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
+import com.mongodb.QueryBuilder;
 import com.yammer.metrics.annotation.Metered;
 import net.darklordpotter.ml.core.Story;
 import net.vz.mongodb.jackson.DBQuery;
@@ -62,6 +63,18 @@ public class StoryResource {
         return jacksonDBCollection.find(thresholdQuery).sort(
                 new BasicDBObject(sortField != null ? sortField : "title", translateSortToInt(sortDirection)));
     }
+//
+//    @GET
+//    @Metered
+//    @Path("/{storyId}")
+//    public Story getStory(@QueryParam("dlpThreadId") Long storyId) {
+//        Story story = jacksonDBCollection.find(DBQuery.is(""));
+//
+//        if (story == null)
+//            throw new WebApplicationException(Response.Status.NOT_FOUND);
+//
+//        return story;
+//    }
 
     @GET
     @Metered

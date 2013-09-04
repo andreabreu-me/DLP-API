@@ -10,12 +10,14 @@ import com.yammer.dropwizard.auth.basic.BasicAuthProvider;
 import com.yammer.dropwizard.config.Bootstrap;
 import com.yammer.dropwizard.config.Environment;
 import com.yammer.dropwizard.jdbi.DBIFactory;
+import net.darklordpotter.ml.core.Story;
 import net.darklordpotter.ml.query.api.User;
 import net.darklordpotter.ml.query.core.DlpAuthenticator;
 import net.darklordpotter.ml.query.core.MongoClientManager;
 import net.darklordpotter.ml.query.healthcheck.MongoHealthCheck;
 import net.darklordpotter.ml.query.jdbi.*;
 import net.darklordpotter.ml.query.resources.*;
+import net.vz.mongodb.jackson.JacksonDBCollection;
 import org.skife.jdbi.v2.DBI;
 
 import java.util.concurrent.TimeUnit;
@@ -47,12 +49,14 @@ public class LibraryService extends Service<LibraryConfiguration> {
         final ForumDAO forumDAO = jdbi.onDemand(ForumDAO.class);
         final ThreadDAO threadDAO = jdbi.onDemand(ThreadDAO.class);
         final SubscriptionDAO subscriptionDAO = jdbi.onDemand(SubscriptionDAO.class);
+        final SimilarityDAO similarityDAO = jdbi.onDemand(SimilarityDAO.class);
 
         final MongoClientManager mongoClientManager = new MongoClientManager(configuration.mongoHost, configuration.mongoPort);
         final MongoClient client = mongoClientManager.getClient();
         final DB db = client.getDB(configuration.mongoDatabaseName);
 
         final DBCollection collection = db.getCollection("stories");
+        final JacksonDBCollection<Story, String> libraryCollection = JacksonDBCollection.wrap(collection, Story.class, String.class);
 
         environment.addProvider(
                 new BasicAuthProvider<>(
@@ -74,6 +78,7 @@ public class LibraryService extends Service<LibraryConfiguration> {
         environment.addResource(new FFNResource());
         environment.addResource(new TagsResource(collection));
         environment.addResource(new StoryResource(collection));
+        environment.addResource(new SimilarityResource(similarityDAO, libraryCollection));
 
         // Forums API
         environment.addResource(new PostResource(dao));
