@@ -32,6 +32,6 @@ public class PostResource {
     @GET
     @Path("thread/{threadId}")
     public List<Post> postForThreadId(@PathParam("threadId") Long threadId) {
-        return dao.getPostsForThreadId(threadId, 1000);
+        return dao.getPostsForThreadId(threadId, 5000);
     }
 }
