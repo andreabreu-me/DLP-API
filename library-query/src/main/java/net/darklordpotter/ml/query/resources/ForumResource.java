@@ -2,6 +2,8 @@ package net.darklordpotter.ml.query.resources;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
+import com.wordnik.swagger.annotations.Api;
+import com.wordnik.swagger.annotations.ApiOperation;
 import com.yammer.dropwizard.auth.Auth;
 import net.darklordpotter.ml.query.api.DiscussionThread;
 import net.darklordpotter.ml.query.api.Forum;
@@ -17,6 +19,7 @@ import javax.ws.rs.*;
  * @author Michael Rose <lordravenclaw@patronuscharm.net>
  */
 @Path("/v1/forums")
+@Api(value = "/v1/forums", description = "Lists forums and threads in a forum")
 @Produces("application/json; charset=utf-8")
 public class ForumResource {
     private final ForumDAO forumDAO;
@@ -28,6 +31,7 @@ public class ForumResource {
     }
 
     @GET
+    @ApiOperation("list forums")
     public Iterable<Forum> listVisibleForums(@Auth(required = false) User user) {
         System.out.println(user);
         return Iterables.filter(forumDAO.listForums(), new Predicate<Forum>() {
@@ -39,6 +43,7 @@ public class ForumResource {
     }
 
     @GET
+    @ApiOperation("list threads")
     @Path("/{forumid}/threads")
     public Iterable<DiscussionThread> threadsForForum(@PathParam("forumid") Long forumId,
                                                       @QueryParam("start") @DefaultValue("0") Integer start,

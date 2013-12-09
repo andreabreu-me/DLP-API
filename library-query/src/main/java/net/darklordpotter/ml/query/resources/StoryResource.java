@@ -8,6 +8,8 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
 import com.mongodb.QueryBuilder;
+import com.wordnik.swagger.annotations.Api;
+import com.wordnik.swagger.annotations.ApiOperation;
 import com.yammer.metrics.annotation.Metered;
 import net.darklordpotter.ml.core.Story;
 import net.vz.mongodb.jackson.DBQuery;
@@ -29,6 +31,7 @@ import java.util.regex.Pattern;
  *
  * @author Michael Rose <lordravenclaw@patronuscharm.net>
  */
+@Api(value = "/stories", description = "Methods around the DLP Library")
 @Path("/stories")
 @Produces("application/json; charset=utf-8")
 public class StoryResource {
@@ -41,6 +44,7 @@ public class StoryResource {
         this.jacksonDBCollection = JacksonDBCollection.wrap(libraryCollection, Story.class, String.class);
     }
 
+    @ApiOperation("Queries a sorted list of stories")
     @GET
     @Metered
     public Iterator<Story> getAllStories(@QueryParam("ratingThreshold") Double threshold,
@@ -76,6 +80,8 @@ public class StoryResource {
 //        return story;
 //    }
 
+
+    @ApiOperation("Gets a single story element")
     @GET
     @Metered
     @Path("/{storyId}")
@@ -88,6 +94,8 @@ public class StoryResource {
         return story;
     }
 
+
+    @ApiOperation("Gets multiple stories")
     @GET
     @Metered
     @Path("/multiget/{query}")
@@ -107,6 +115,8 @@ public class StoryResource {
         return jacksonDBCollection.find(DBQuery.in("_id", Lists.newArrayList(s.split(query))));
     }
 
+
+    @ApiOperation("Gets stories with a particular tag")
     @GET
     @Metered
     @Path("/tagged/{tag}")
