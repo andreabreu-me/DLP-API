@@ -15,6 +15,8 @@ import java.util.List;
  */
 @RegisterMapper(DiscussionThreadMapper.class)
 public interface ThreadDAO {
-    @SqlQuery("SELECT * FROM thread WHERE visible > 0 AND forumid = :forumId ORDER BY lastpost DESC")
-    public List<DiscussionThread> threadsForForum(@Bind("forumId") Long forumId);
+    @SqlQuery("SELECT * FROM thread WHERE visible > 0 AND forumid = :forumId ORDER BY lastpost DESC LIMIT :start,:limit")
+    public List<DiscussionThread> threadsForForum(@Bind("forumId") Long forumId,
+                                                  @Bind("start") Integer start,
+                                                  @Bind("limit") Integer limit);
 }

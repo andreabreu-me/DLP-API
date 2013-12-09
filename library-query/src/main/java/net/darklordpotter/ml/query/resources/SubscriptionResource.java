@@ -29,6 +29,7 @@ public class SubscriptionResource {
     @GET
     @Path("/threads")
     public List<ThreadSubscription> subscribedThreads(@Auth User user) {
-        return dao.getThreadSubscriptionsForUser(user.getUserId());
+        return null;
+//        return dao.getThreadSubscriptionsForUser(user.getUserId());
     }
 }

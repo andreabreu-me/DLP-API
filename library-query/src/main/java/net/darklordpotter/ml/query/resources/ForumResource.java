@@ -9,10 +9,7 @@ import net.darklordpotter.ml.query.api.User;
 import net.darklordpotter.ml.query.jdbi.ForumDAO;
 import net.darklordpotter.ml.query.jdbi.ThreadDAO;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 
 /**
  * 2013-06-15
@@ -43,7 +40,9 @@ public class ForumResource {
 
     @GET
     @Path("/{forumid}/threads")
-    public Iterable<DiscussionThread> threadsForForum(@PathParam("forumid") Long forumId) {
-        return threadDAO.threadsForForum(forumId);
+    public Iterable<DiscussionThread> threadsForForum(@PathParam("forumid") Long forumId,
+                                                      @QueryParam("start") @DefaultValue("0") Integer start,
+                                                      @QueryParam("limit") @DefaultValue("100") Integer limit) {
+        return threadDAO.threadsForForum(forumId, start, limit);
     }
 }

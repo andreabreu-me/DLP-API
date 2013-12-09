@@ -3,10 +3,7 @@ package net.darklordpotter.ml.query.resources;
 import net.darklordpotter.ml.query.api.Post;
 import net.darklordpotter.ml.query.jdbi.PostDAO;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import java.util.List;
 
 /**
@@ -25,13 +22,16 @@ public class PostResource {
 
     @GET
     @Path("latest")
-    public List<Post> latestPosts() {
-        return dao.getLatestPosts(0, 50);
+    public List<Post> latestPosts(@QueryParam("start") @DefaultValue("0") Integer start,
+                                  @QueryParam("limit") @DefaultValue("50") Integer limit) {
+        return dao.getLatestPosts(start, limit);
     }
 
     @GET
     @Path("thread/{threadId}")
-    public List<Post> postForThreadId(@PathParam("threadId") Long threadId) {
-        return dao.getPostsForThreadId(threadId, 5000);
+    public List<Post> postForThreadId(@PathParam("threadId") Long threadId,
+                                      @QueryParam("start") @DefaultValue("0") Integer start,
+                                      @QueryParam("limit") @DefaultValue("5000") Integer limit) {
+        return dao.getPostsForThreadId(threadId, start, limit);
     }
 }

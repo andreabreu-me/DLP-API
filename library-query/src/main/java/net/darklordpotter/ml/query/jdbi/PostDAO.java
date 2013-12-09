@@ -56,6 +56,6 @@ public interface PostDAO {
             "WHERE\n" +
             "t.threadid = :threadId\n" +
             "ORDER BY postid ASC\n" +
-            "LIMIT :limit")
-    public List<Post> getPostsForThreadId(@Bind("threadId") Long threadId, @Bind("limit") Integer limit);
+            "LIMIT :start,:limit")
+    public List<Post> getPostsForThreadId(@Bind("threadId") Long threadId, @Bind("start") Integer start, @Bind("limit") Integer limit);
 }

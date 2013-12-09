@@ -43,6 +43,8 @@ public class LibraryService extends Service<LibraryConfiguration> {
     public void run(LibraryConfiguration configuration, Environment environment) throws Exception {
         final DBIFactory factory = new DBIFactory();
         final DBI jdbi = factory.build(environment, configuration.getDatabaseConfiguration(), "mysql");
+        jdbi.registerArgumentFactory(new DateTimeAsTimestampArgument());
+        jdbi.registerContainerFactory(new DateTimeContainerFactory());
 
         final PostDAO dao = jdbi.onDemand(PostDAO.class);
         final AuthDAO authDAO = jdbi.onDemand(AuthDAO.class);
@@ -50,6 +52,7 @@ public class LibraryService extends Service<LibraryConfiguration> {
         final ThreadDAO threadDAO = jdbi.onDemand(ThreadDAO.class);
         final SubscriptionDAO subscriptionDAO = jdbi.onDemand(SubscriptionDAO.class);
         final SimilarityDAO similarityDAO = jdbi.onDemand(SimilarityDAO.class);
+        final ThreadRatingDao threadRatingDao = jdbi.onDemand(ThreadRatingDao.class);
 
         final MongoClientManager mongoClientManager = new MongoClientManager(configuration.mongoHost, configuration.mongoPort);
         final MongoClient client = mongoClientManager.getClient();
@@ -78,6 +81,7 @@ public class LibraryService extends Service<LibraryConfiguration> {
         environment.addResource(new FFNResource());
         environment.addResource(new TagsResource(collection));
         environment.addResource(new StoryResource(collection));
+        environment.addResource(new RatingResource(threadRatingDao));
         environment.addResource(new SimilarityResource(similarityDAO, libraryCollection));
 
         // Forums API
