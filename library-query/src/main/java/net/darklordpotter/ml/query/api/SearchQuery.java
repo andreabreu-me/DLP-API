@@ -1,13 +1,16 @@
 package net.darklordpotter.ml.query.api;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.common.collect.Lists;
 import lombok.Data;
-import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.index.query.TermsQueryBuilder;
+import org.elasticsearch.index.query.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+
+import static com.google.common.base.Strings.isNullOrEmpty;
 
 /**
  * 2014-01-30
@@ -34,45 +37,64 @@ import java.util.List;
  */
 @Data
 public class SearchQuery {
-    String title, author, summary;
+    private Logger log = LoggerFactory.getLogger(SearchQuery.class);
 
-    @JsonProperty("wordcount_lower")
+    String title, author, summary;
     Integer wordcountLower;
 
-    @JsonProperty("wordcount_upper")
     Integer wordcountUpper;
-    @JsonProperty("character_required")
+
+    List<String> rating = Collections.emptyList();
+    List<Integer> genreRequired = Collections.emptyList();
+    List<Integer> genreOptional = Collections.emptyList();
+
+    boolean genreOptionalExclude;
     List<Integer> characterRequired = Collections.emptyList();
-    @JsonProperty("character_optional")
     List<Integer> characterOptional = Collections.emptyList();
 
-    @JsonProperty("genre_required")
-    List<Integer> genreRequired = Collections.emptyList();
-
-    @JsonProperty("genre_optional")
-    List<Integer> genreOptional = Collections.emptyList();
+    boolean characterOptionalExclude;
     String language;
     String sortBy, orderBy;
 
-    public BoolQueryBuilder toQueryBuilder() {
-        BoolQueryBuilder query = QueryBuilders.boolQuery();
-
-        term(query, "title", title);
-        term(query, "author", author);
-        term(query, "summary", summary);
-        range(query, "meta.words", wordcountLower, wordcountUpper);
-        filter(query, "meta.characters.character_id", characterRequired, true);
-        filter(query, "meta.genres.genres_id", genreRequired, true);
-        filter(query, "meta.language", language);
-
-        System.out.println(query);
-
-        return query;
+    public boolean isFreeText() {
+        return !isNullOrEmpty(title) || !isNullOrEmpty(summary);
     }
 
-    private <T> void term(BoolQueryBuilder query, String field, T value) {
-        if (value != null) {
-            query.must(QueryBuilders.termQuery(field, value));
+    public QueryBuilder toQueryBuilder() {
+        BoolQueryBuilder query = QueryBuilders.boolQuery();
+
+        match(query, "title", title);
+        match(query, "author", author);
+        match(query, "summary", summary);
+        range(query, "meta.words", wordcountLower, wordcountUpper);
+
+        List<FilterBuilder> filterBuilders = Lists.newArrayList();
+        filterBuilders.add(filter("meta.characters.character_id", characterRequired, true, false));
+        filterBuilders.add(filter("meta.characters.character_id", characterOptional, false, characterOptionalExclude));
+        filterBuilders.add(filter("meta.genres.genres_id", genreRequired, true, false));
+        filterBuilders.add(filter("meta.genres.genres_id", genreOptional, false, genreOptionalExclude));
+//        filterBuilders.add(filter("meta.language", language, false));
+
+        List<FilterBuilder> nonNullFilters = Lists.newArrayList();
+        for (FilterBuilder filterBuilder : filterBuilders) {
+            if (filterBuilder != null) {
+                nonNullFilters.add(filterBuilder);
+            }
+        }
+
+        FilteredQueryBuilder filteredQuery = QueryBuilders.filteredQuery(
+                query,
+                FilterBuilders.andFilter((FilterBuilder[]) nonNullFilters.toArray(new FilterBuilder[0]))
+        );
+
+        log.info("From data {} ", this);
+
+        return filteredQuery;
+    }
+
+    private void match(BoolQueryBuilder query, String field, String value) {
+        if (!isNullOrEmpty(value)) {
+            query.must(QueryBuilders.matchQuery(field, value));
         }
     }
 
@@ -81,38 +103,21 @@ public class SearchQuery {
         query.must(QueryBuilders.rangeQuery(field).from(lower).to(upper));
     }
 
-    private <T> void filter(BoolQueryBuilder query, String field, T element) {
+    private <T> FilterBuilder filter(String field, T element, boolean exclude) {
+        return filter(field, Collections.singletonList(element), true, exclude);
     }
 
-    private <T> void filterNot(BoolQueryBuilder query, String field, T value) {
-        if (value != null) {
-            query.mustNot(QueryBuilders.termQuery(field, value));
+    private <T> FilterBuilder filter(String field, Collection<T> inElements, boolean matchAll, boolean exclude) {
+        if (inElements.isEmpty()) return null;
+
+        TermsFilterBuilder filterBuilder = FilterBuilders.inFilter(field, inElements.toArray());
+
+        if (matchAll) filterBuilder.execution("and");
+
+        if (exclude) {
+            return FilterBuilders.notFilter(filterBuilder);
+        } else {
+            return filterBuilder;
         }
-    }
-
-    private <T> void filter(BoolQueryBuilder query, String field, List<T> inElements, boolean matchAll) {
-        if (inElements.isEmpty()) return;
-
-        TermsQueryBuilder queryBuilder = QueryBuilders.inQuery(field, inElements);
-        if (matchAll) queryBuilder.minimumMatch(inElements.size());
-        query.must(queryBuilder);
-    }
-
-    /**
-     * Does an exclusion TermsQuery
-     *
-     * @param query query builder
-     * @param field document field
-     * @param inElements
-     * @param matchAll If the document does not match ALL terms, exclude. Otherwise a document matching some terms will
-     *                 still be allowed
-     * @param <T>
-     */
-    private <T> void filterNot(BoolQueryBuilder query, String field, List<T> inElements, boolean matchAll) {
-        if (inElements.isEmpty()) return;
-
-        TermsQueryBuilder queryBuilder = QueryBuilders.inQuery(field, inElements);
-        if (matchAll) queryBuilder.minimumMatch(inElements.size());
-        query.mustNot(queryBuilder);
     }
 }

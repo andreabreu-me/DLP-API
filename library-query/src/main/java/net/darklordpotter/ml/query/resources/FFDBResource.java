@@ -11,6 +11,8 @@ import org.elasticsearch.action.get.MultiGetItemResponse;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.client.Client;
+import org.elasticsearch.search.sort.SortBuilders;
+import org.elasticsearch.search.sort.SortOrder;
 
 import javax.ws.rs.*;
 import java.util.Collections;
@@ -53,14 +55,25 @@ public class FFDBResource {
 
     @POST
     @Path("/search")
-    public SearchResult query(SearchQuery query, @QueryParam("from") @DefaultValue("0") int from,
-    @QueryParam("max") @DefaultValue("25") int max) {
+    public SearchResult query(
+                                SearchQuery query,
+                                @QueryParam("from") @DefaultValue("0") int from,
+                                @QueryParam("max") @DefaultValue("50") int max) {
         SearchRequestBuilder searchRequestBuilder = client.prepareSearch("ffn_index")
                 .setTypes("story")
                 .setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
                 .setQuery(query.toQueryBuilder())
                 .setFrom(from)
                 .setSize(max);
+
+        if (query.getSortBy().equalsIgnoreCase("_score")) {
+            searchRequestBuilder.addSort(SortBuilders.scoreSort());
+        } else {
+            searchRequestBuilder.addSort(query.getSortBy(), SortOrder.valueOf(query.getOrderBy().toUpperCase()));
+            searchRequestBuilder.addSort(SortBuilders.scoreSort());
+        }
+
+        System.out.println(searchRequestBuilder);
 
         return SearchResult.fromResult(searchRequestBuilder.get());
     }
