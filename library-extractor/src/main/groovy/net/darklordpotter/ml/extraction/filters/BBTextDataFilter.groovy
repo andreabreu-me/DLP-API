@@ -19,7 +19,6 @@ class BBTextDataFilter implements DataFilter {
 
         if (urlm.find()) {
             String url = urlm.group(1)
-            println url
             context.pageText = urlm.replaceAll(url)
         }
 

@@ -8,6 +8,7 @@ import net.darklordpotter.ml.extraction.extractors.TagExtractor
 import net.darklordpotter.ml.extraction.extractors.ThreadRatingExtractor
 import net.darklordpotter.ml.extraction.extractors.TitleExtractor
 import net.darklordpotter.ml.extraction.filters.BBTextDataFilter
+import net.darklordpotter.ml.extraction.filters.ElasticSearchEnrichmentFilter
 import net.darklordpotter.ml.extraction.filters.QuoteDataFilter
 
 /**
@@ -29,5 +30,9 @@ class ExtractorConfiguration {
                 ,new TagExtractor()
                 ,new DateExtractor()
         ]
+    }
+
+    public static List<DataFilter> getPostFilters() {
+        [new ElasticSearchEnrichmentFilter()]
     }
 }
