@@ -21,7 +21,7 @@ public class CORSFilter implements Filter {
         res.addHeader("Access-Control-Allow-Origin", "*");
         res.addHeader("Access-Control-Allow-Methods", "GET,POST");
         res.addHeader("Access-Control-Allow-Credentials", "true");
-        res.addHeader("Access-Control-Allow-Headers", "X-Requested-With");
+        res.addHeader("Access-Control-Allow-Headers", "X-Requested-With,Content-Type");
         res.addHeader("Access-Control-Max-Age", "1800");
 
         filterChain.doFilter(servletRequest, servletResponse);

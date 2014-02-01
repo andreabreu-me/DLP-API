@@ -1,9 +1,6 @@
 package net.darklordpotter.ml.query.api;
 
 import lombok.Data;
-import lombok.ToString;
-
-import java.util.List;
 
 /**
  * 2013-06-24

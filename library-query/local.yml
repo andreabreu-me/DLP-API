@@ -39,4 +39,4 @@ database:
 authenticationCachePolicy: maximumSize=10000, expireAfterAccess=10m
 
 logging:
-  level: ALL
+  level: DEBUG

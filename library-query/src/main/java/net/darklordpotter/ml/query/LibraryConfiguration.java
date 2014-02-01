@@ -23,6 +23,9 @@ public class LibraryConfiguration extends Configuration {
     public String mongoHost = "localhost";
 
     @JsonProperty
+    public String esHost = "localhost";
+
+    @JsonProperty
     @Min(1)
     @Max(65535)
     public Integer mongoPort = 27017;

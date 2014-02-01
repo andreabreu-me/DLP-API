@@ -1,6 +1,6 @@
 package net.darklordpotter.ml.query;
 
-import com.hubspot.dropwizard.guice.GuiceBundle;
+import com.google.common.collect.Lists;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.mongodb.MongoClient;
@@ -20,14 +20,15 @@ import com.yammer.dropwizard.config.Bootstrap;
 import com.yammer.dropwizard.config.Environment;
 import com.yammer.dropwizard.jdbi.DBIFactory;
 import net.darklordpotter.ml.core.Story;
-import net.darklordpotter.ml.query.api.User;
 import net.darklordpotter.ml.query.core.DlpAuthenticator;
+import net.darklordpotter.ml.query.core.ElasticSearchClientManager;
 import net.darklordpotter.ml.query.core.MongoClientManager;
 import net.darklordpotter.ml.query.healthcheck.MongoHealthCheck;
 import net.darklordpotter.ml.query.jdbi.*;
 import net.darklordpotter.ml.query.resources.*;
 import net.vz.mongodb.jackson.JacksonDBCollection;
 import org.skife.jdbi.v2.DBI;
+import org.skife.jdbi.v2.logging.PrintStreamLog;
 
 import java.util.concurrent.TimeUnit;
 
@@ -55,6 +56,8 @@ public class LibraryService extends Service<LibraryConfiguration> {
         jdbi.registerArgumentFactory(new DateTimeAsTimestampArgument());
         jdbi.registerContainerFactory(new DateTimeContainerFactory());
 
+        jdbi.setSQLLog(new PrintStreamLog(System.out));
+
         final PostDAO dao = jdbi.onDemand(PostDAO.class);
         final AuthDAO authDAO = jdbi.onDemand(AuthDAO.class);
         final ForumDAO forumDAO = jdbi.onDemand(ForumDAO.class);
@@ -66,6 +69,10 @@ public class LibraryService extends Service<LibraryConfiguration> {
         final MongoClientManager mongoClientManager = new MongoClientManager(configuration.mongoHost, configuration.mongoPort);
         final MongoClient client = mongoClientManager.getClient();
         final DB db = client.getDB(configuration.mongoDatabaseName);
+
+        final ElasticSearchClientManager searchClientManager = new ElasticSearchClientManager("elasticsearch",
+                                                                                              Lists.newArrayList(configuration.esHost), 9300);
+        environment.manage(searchClientManager);
 
         final DBCollection collection = db.getCollection("stories");
         final JacksonDBCollection<Story, String> libraryCollection = JacksonDBCollection.wrap(collection, Story.class, String.class);
@@ -89,7 +96,6 @@ public class LibraryService extends Service<LibraryConfiguration> {
         environment.addResource(new WbaResource(dao));
         environment.addResource(new FFNResource());
         environment.addResource(new TagsResource(collection));
-        environment.addResource(new StoryResource(collection));
         environment.addResource(new RatingResource(threadRatingDao));
         environment.addResource(new SimilarityResource(similarityDAO, libraryCollection));
 
@@ -98,6 +104,11 @@ public class LibraryService extends Service<LibraryConfiguration> {
         environment.addResource(new AuthResource(authDAO));
         environment.addResource(new ForumResource(forumDAO, threadDAO));
         environment.addResource(new SubscriptionResource(subscriptionDAO));
+
+        // FFDB API
+        FFDBResource ffdbResource = new FFDBResource(searchClientManager.getClient());
+        environment.addResource(ffdbResource);
+        environment.addResource(new StoryResource(collection, threadRatingDao, null));
 
 
         // Swagger Resource

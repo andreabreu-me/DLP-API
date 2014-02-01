@@ -19,4 +19,6 @@ import java.util.List;
 public interface ThreadRatingDao {
     @SqlQuery("SELECT * FROM threadrate WHERE userid = :userId")
     public List<ThreadRating> getRatingsForUser(@Bind("userId") Long userId);
+    @SqlQuery("SELECT * FROM threadrate WHERE userid = :userId AND threadid = :threadId")
+    public ThreadRating getRatingsForUserAndThread(@Bind("userId") Long userId, @Bind("threadId") Long threadId);
 }
