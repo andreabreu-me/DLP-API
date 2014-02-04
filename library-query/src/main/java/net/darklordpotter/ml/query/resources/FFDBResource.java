@@ -67,10 +67,12 @@ public class FFDBResource {
                 .setFrom(from)
                 .setSize(max);
 
-        if (query.getSortBy().equalsIgnoreCase("_score")) {
+        if (!Strings.isNullOrEmpty(query.getSortBy()) && query.getSortBy().equalsIgnoreCase("_score")) {
             searchRequestBuilder.addSort(SortBuilders.scoreSort());
         } else {
-            searchRequestBuilder.addSort(query.getSortBy(), SortOrder.valueOf(query.getOrderBy().toUpperCase()));
+            String orderBy = query.getOrderBy();
+            if (Strings.isNullOrEmpty(orderBy) || (!orderBy.toLowerCase().equals("asc") && !orderBy.toLowerCase().equals("desc"))) orderBy = "ASC";
+            searchRequestBuilder.addSort(query.getSortBy(), SortOrder.valueOf(orderBy.toUpperCase()));
             searchRequestBuilder.addSort(SortBuilders.scoreSort());
         }
 
