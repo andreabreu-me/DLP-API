@@ -1,10 +1,8 @@
-package net.darklordpotter.ml.core;
+package net.darklordpotter.ml.core
 
-import com.google.common.collect.Sets;
+import com.google.common.collect.Sets
 
-import javax.persistence.Id;
-import java.util.Date;
-import java.util.Set;
+import javax.persistence.Id
 
 public class Story {
     public Story(Long threadId) {
@@ -97,6 +95,14 @@ public class Story {
         this.posted = posted;
     }
 
+    public MetaData getMeta() {
+        return meta
+    }
+
+    public void setMeta(MetaData meta) {
+        this.meta = meta
+    }
+
     public Set<Url> getUrl() {
         return url;
     }
@@ -134,6 +140,7 @@ public class Story {
     private Double threadRating = 0.0;
     private Double adjustedThreadRating = 0.0;
     private Date posted;
+    private MetaData meta = new MetaData();
     private Set<Url> url = Sets.newHashSet();
     private Set<String> tags = Sets.newHashSet();
 }

@@ -2,6 +2,7 @@ package net.darklordpotter.ml.query.resources;
 
 import com.google.common.base.Function;
 import com.google.common.base.Splitter;
+import com.google.common.base.Strings;
 import com.google.common.collect.Iterables;
 import net.darklordpotter.ml.query.Constants;
 import net.darklordpotter.ml.query.api.SearchQuery;

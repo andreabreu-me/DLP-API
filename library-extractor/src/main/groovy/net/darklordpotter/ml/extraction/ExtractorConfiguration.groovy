@@ -5,7 +5,7 @@ import net.darklordpotter.ml.extraction.extractors.DateExtractor
 import net.darklordpotter.ml.extraction.extractors.RatingExtractor
 import net.darklordpotter.ml.extraction.extractors.SummaryExtractor
 import net.darklordpotter.ml.extraction.extractors.TagExtractor
-import net.darklordpotter.ml.extraction.extractors.ThreadRatingExtractor
+import net.darklordpotter.ml.extraction.extractors.ThreadMetadataExtractor
 import net.darklordpotter.ml.extraction.extractors.TitleExtractor
 import net.darklordpotter.ml.extraction.filters.BBTextDataFilter
 import net.darklordpotter.ml.extraction.filters.ElasticSearchEnrichmentFilter
@@ -26,7 +26,7 @@ class ExtractorConfiguration {
                 ,new AuthorExtractor()
                 ,new RatingExtractor()
                 ,new SummaryExtractor()
-                ,new ThreadRatingExtractor()
+                ,new ThreadMetadataExtractor()
                 ,new TagExtractor()
                 ,new DateExtractor()
         ]

@@ -24,6 +24,7 @@ import net.darklordpotter.ml.query.Constants;
 import net.darklordpotter.ml.query.api.ThreadRating;
 import net.darklordpotter.ml.query.api.User;
 import net.darklordpotter.ml.query.jdbi.ThreadRatingDao;
+import net.vz.mongodb.jackson.DBCursor;
 import net.vz.mongodb.jackson.DBQuery;
 import net.vz.mongodb.jackson.JacksonDBCollection;
 import org.codehaus.groovy.runtime.DefaultGroovyMethods;

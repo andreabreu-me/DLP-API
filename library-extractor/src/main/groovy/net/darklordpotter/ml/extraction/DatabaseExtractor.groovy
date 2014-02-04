@@ -2,6 +2,7 @@ package net.darklordpotter.ml.extraction
 
 import com.netflix.hystrix.HystrixCommand
 import com.netflix.hystrix.HystrixCommandGroupKey
+import net.darklordpotter.ml.core.FFNMetaData
 import net.darklordpotter.ml.core.Rating
 import net.darklordpotter.ml.core.Story
 import net.darklordpotter.ml.core.Url
@@ -14,18 +15,13 @@ import org.elasticsearch.client.Client
 import org.elasticsearch.client.transport.TransportClient
 import org.elasticsearch.common.transport.InetSocketTransportAddress
 import org.elasticsearch.common.transport.TransportAddress
-import rx.Observable
-import rx.Observer;
-import rx.Subscription
-import rx.concurrency.Schedulers;
-import rx.util.functions.Func1;
+import rx.concurrency.Schedulers
 import rx.Observable
 
 import java.util.concurrent.CountDownLatch
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
-import static net.darklordpotter.ml.extraction.utils.TimingUtil.timeIt
 /**
  * 2013-02-07
  * @author Michael Rose <elementation@gmail.com>
@@ -35,7 +31,9 @@ class DatabaseExtractor {
     static final List<DataExtractor> extractors = ExtractorConfiguration.extractors
     static final List<DataExtractor> postFilters = ExtractorConfiguration.postFilters
 
-    protected static void setup() {
+    protected static void setup(String[] args) {
+        esClient = getElasticSearchClient([args[4]], 9300)
+
         for (StoryUrlPattern urlPattern : StoryUrlPattern.values()) {
             extractors.add(new UrlExtractor(urlPattern))
         }
@@ -65,12 +63,12 @@ class DatabaseExtractor {
 
     public static void main(String[] args) {
         if (args.length == 0) {
-            args = ["localhost", "darklord_mainvb", "root", ""]
+            args = ["localhost", "darklord_mainvb", "root", "", "localhost"]
         }
 
         println args
 
-        setup()
+        setup(args)
 
         DataProvider provider = new DLPDataProvider(args[0], args[1], args[2], args[3])
         DataSink sink = new MongoDBSink("dlp_library", "stories")
@@ -139,12 +137,20 @@ class DatabaseExtractor {
                     story.summary = s.summary
                     story.rating = Rating.valueOf(Rating.class, s.meta.rated.replace("K+", "KPLUS"))
 
+                    story.meta.ffn = new FFNMetaData()
+                    story.meta.ffn.words = s.meta.words
+                    story.meta.ffn.chapters = s.meta.chapters
+                    story.meta.ffn.favorites = s.meta.favs
+                    story.meta.ffn.follows = s.meta.follows
+                    story.meta.ffn.reviews = s.meta.reviews
+                    story.meta.ffn.status = s.meta.status
+                    story.meta.ffn.published = s.published
+                    story.meta.ffn.updated = s.updated
+
                     if (s.meta.favs > 100)
                         story.tags << ">100 favorites"
                     if (s.meta.follows > 1000)
                         story.tags << ">1000 follows"
-
-                    story.tags << "enriched"
                 }
 
                 return story
@@ -163,7 +169,7 @@ class DatabaseExtractor {
         return new TransportClient().addTransportAddresses(transportAddresses);
     }
 
-    static Client esClient = getElasticSearchClient(["localhost"], 9300)
+    static Client esClient
 
     static class ElasticSearchCommand extends HystrixCommand<StoryHeader> {
         long id
