@@ -74,7 +74,9 @@ public class StoryResource {
     public Iterator<Story> getAllStories(@QueryParam("ratingThreshold") Double threshold,
                                          @DefaultValue("adjustedThreadRating") @QueryParam("sortField") final String sortField,
                                          @DefaultValue("DESC") @QueryParam("sortDirection") final String sortDirection,
-                                         @QueryParam("title") final String title) {
+                                         @QueryParam("title") final String title,
+                                         @QueryParam("from") @DefaultValue("0") final int from,
+                                         @QueryParam("max") @DefaultValue("-1") final int max) {
         final DBObject thresholdQuery;
         if (threshold != null) {
             thresholdQuery = DBQuery.and(DBQuery.regex("title", Pattern.compile(title)),
@@ -83,15 +85,16 @@ public class StoryResource {
             thresholdQuery = DBQuery.regex("title", Pattern.compile(title != null ? title : ""));
         }
 
-
-
-
-        //constructThresholdQuery(threshold)
-
-//        libraryCollection.
-
-        return jacksonDBCollection.find(thresholdQuery).sort(
+        DBCursor<Story> cursor = jacksonDBCollection.find(thresholdQuery).sort(
                 new BasicDBObject(sortField != null ? sortField : "title", translateSortToInt(sortDirection)));
+
+
+        if (max > -1 && from > -1) {
+            cursor.skip(from);
+            cursor.limit(max);
+        }
+
+        return cursor;
     }
 
     @ApiOperation("Queries a sorted list of stories")
@@ -101,7 +104,9 @@ public class StoryResource {
     public Iterator<Story> getAllStoriesWithEs(@QueryParam("ratingThreshold") Double threshold,
                                          @DefaultValue("adjustedThreadRating") @QueryParam("sortField") final String sortField,
                                          @DefaultValue("DESC") @QueryParam("sortDirection") final String sortDirection,
-                                         @QueryParam("title") final String title) {
+                                         @QueryParam("title") final String title,
+                                         @QueryParam("from") @DefaultValue("0") final int from,
+                                         @QueryParam("max") @DefaultValue("-1") final int max) {
         final DBObject thresholdQuery;
         if (threshold != null) {
             thresholdQuery = DBQuery.and(DBQuery.regex("title", Pattern.compile(title)),
@@ -114,9 +119,15 @@ public class StoryResource {
         Observable<Story> storyObservable = Observable.create(new Observable.OnSubscribeFunc<Story>() {
             @Override
             public Subscription onSubscribe(Observer<? super Story> observer) {
-                Iterator<Story> storyIterator = jacksonDBCollection.find(thresholdQuery).sort(
+                DBCursor<Story> cursor = jacksonDBCollection.find(thresholdQuery).sort(
                         new BasicDBObject(sortField != null ? sortField : "title", translateSortToInt(sortDirection)));
 
+                if (max > -1) {
+                    cursor.skip(from);
+                    cursor.limit(max);
+                }
+
+                Iterator<Story> storyIterator = cursor;
                 while (storyIterator.hasNext()) {
                     Story next = storyIterator.next();
                     observer.onNext(next);
