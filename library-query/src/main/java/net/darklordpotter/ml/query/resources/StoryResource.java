@@ -1,42 +1,31 @@
 package net.darklordpotter.ml.query.resources;
 
 import com.google.common.base.Function;
-import com.google.common.base.Optional;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
-import com.mongodb.QueryBuilder;
-import com.netflix.hystrix.HystrixCollapser;
-import com.netflix.hystrix.HystrixCollapserKey;
 import com.netflix.hystrix.HystrixCommand;
 import com.netflix.hystrix.HystrixCommandGroupKey;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
-import com.yammer.dropwizard.auth.Auth;
 import com.yammer.metrics.annotation.Metered;
 import lombok.Data;
-import net.darklordpotter.ml.core.Rating;
 import net.darklordpotter.ml.core.Story;
 import net.darklordpotter.ml.query.Constants;
 import net.darklordpotter.ml.query.api.ThreadRating;
-import net.darklordpotter.ml.query.api.User;
 import net.darklordpotter.ml.query.jdbi.ThreadRatingDao;
 import net.vz.mongodb.jackson.DBCursor;
 import net.vz.mongodb.jackson.DBQuery;
 import net.vz.mongodb.jackson.JacksonDBCollection;
-import org.codehaus.groovy.runtime.DefaultGroovyMethods;
-import org.funcito.Funcito;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import rx.Observable;
 import rx.Observer;
 import rx.Subscription;
 import rx.util.functions.Func1;
-
-import static org.funcito.FuncitoGuava.*;
 
 import javax.annotation.Nullable;
 import javax.ws.rs.*;
@@ -59,12 +48,12 @@ public class StoryResource {
     private final ThreadRatingDao ratingDao;
     private final JacksonDBCollection<Story, String> jacksonDBCollection;
     private final Logger log = LoggerFactory.getLogger(StoryResource.class);
-    private final FFDBResource ffdbResource;
+    private final SearchResource searchResource;
 
-    public StoryResource(final DBCollection libraryCollection, final ThreadRatingDao ratingDao, FFDBResource ffdbResource) {
+    public StoryResource(final DBCollection libraryCollection, final ThreadRatingDao ratingDao, SearchResource searchResource) {
         this.libraryCollection = libraryCollection;
         this.ratingDao = ratingDao;
-        this.ffdbResource = ffdbResource;
+        this.searchResource = searchResource;
         this.jacksonDBCollection = JacksonDBCollection.wrap(libraryCollection, Story.class, String.class);
     }
 

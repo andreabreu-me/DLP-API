@@ -5,7 +5,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.datatype.guava.GuavaModule;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.Getter;
 import org.elasticsearch.search.SearchHit;
 import org.joda.time.DateTime;
 
@@ -19,6 +21,7 @@ import java.util.Map;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Data
 public class StoryHeader {
+    @Getter(AccessLevel.NONE)
     static ObjectMapper mapper;
 
     static {

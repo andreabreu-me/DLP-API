@@ -1,7 +1,10 @@
 package net.darklordpotter.ml.query.api;
 
 import com.google.common.collect.Lists;
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.elasticsearch.index.query.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,7 +40,8 @@ import static com.google.common.base.Strings.isNullOrEmpty;
  */
 @Data
 public class SearchQuery {
-    private Logger log = LoggerFactory.getLogger(SearchQuery.class);
+    @Getter(AccessLevel.NONE)
+    private final Logger log = LoggerFactory.getLogger(SearchQuery.class);
 
     String title, author, summary;
     Integer wordcountLower;
@@ -45,20 +49,18 @@ public class SearchQuery {
     Integer wordcountUpper;
 
     List<String> rating = Collections.emptyList();
-    List<Integer> genreRequired = Collections.emptyList();
-    List<Integer> genreOptional = Collections.emptyList();
+    List<Integer> categoryRequired = Collections.emptyList();
+    List<Integer> categoryOptional = Collections.emptyList();
 
-    boolean genreOptionalExclude;
+    boolean categoryOptionalExclude;
     List<Integer> characterRequired = Collections.emptyList();
     List<Integer> characterOptional = Collections.emptyList();
+
+//    List<List<Integer>> pairings = Collections.emptyList();
 
     boolean characterOptionalExclude;
     String language;
     String sortBy, orderBy;
-
-    public boolean isFreeText() {
-        return !isNullOrEmpty(title) || !isNullOrEmpty(summary);
-    }
 
     public QueryBuilder toQueryBuilder() {
         BoolQueryBuilder query = QueryBuilders.boolQuery();
@@ -71,9 +73,10 @@ public class SearchQuery {
         List<FilterBuilder> filterBuilders = Lists.newArrayList();
         filterBuilders.add(filter("meta.characters.character_id", characterRequired, true, false));
         filterBuilders.add(filter("meta.characters.character_id", characterOptional, false, characterOptionalExclude));
-        filterBuilders.add(filter("meta.genres.genres_id", genreRequired, true, false));
-        filterBuilders.add(filter("meta.genres.genres_id", genreOptional, false, genreOptionalExclude));
-//        filterBuilders.add(filter("meta.language", language, false));
+        filterBuilders.add(filter("meta.categories.category_id", categoryRequired, true, false));
+        filterBuilders.add(filter("meta.categories.category_id", categoryOptional, false, categoryOptionalExclude));
+        filterBuilders.add(filter("meta.language", language.toLowerCase(), false));
+        filterBuilders.add(filter("meta.rated", rating, false, false));
 
         List<FilterBuilder> nonNullFilters = Lists.newArrayList();
         for (FilterBuilder filterBuilder : filterBuilders) {
@@ -86,8 +89,6 @@ public class SearchQuery {
                 query,
                 FilterBuilders.andFilter((FilterBuilder[]) nonNullFilters.toArray(new FilterBuilder[0]))
         );
-
-        log.info("From data {} ", this);
 
         return filteredQuery;
     }

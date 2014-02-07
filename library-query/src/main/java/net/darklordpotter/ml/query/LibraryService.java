@@ -106,8 +106,8 @@ public class LibraryService extends Service<LibraryConfiguration> {
         environment.addResource(new SubscriptionResource(subscriptionDAO));
 
         // FFDB API
-        FFDBResource ffdbResource = new FFDBResource(searchClientManager.getClient());
-        environment.addResource(ffdbResource);
+        SearchResource searchResource = new SearchResource(searchClientManager.getClient());
+        environment.addResource(searchResource);
         environment.addResource(new StoryResource(collection, threadRatingDao, null));
 
 
