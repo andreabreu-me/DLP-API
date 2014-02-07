@@ -5,6 +5,8 @@ import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
 import com.google.common.collect.Maps;
 import net.darklordpotter.ml.query.api.ffdb.ThreadData;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -24,10 +26,14 @@ public class StoryToThreadDataManager {
     }
 
     private static class ThreadLinkSupplier implements Supplier<Map<Long,ThreadData>> {
+        private static Logger log = LoggerFactory.getLogger(ThreadLinkSupplier.class);
 
         @Override
         public Map<Long, ThreadData> get() {
             String file = "/home/fffn/dlp/threadconnections.txt";
+
+            long start = System.nanoTime();
+            log.info("Loading thread connections from {}", file);
 
             List<String> linkages;
             try {
@@ -51,6 +57,8 @@ public class StoryToThreadDataManager {
 
                 threadMappings.put(ffnId, new ThreadData(ffnId, dlpId, voteNum, voteTotal));
             }
+
+            log.info("Loading of thread connections took {} ms", TimeUnit.NANOSECONDS.toMillis(System.nanoTime()-start));
 
             return threadMappings;
         }
