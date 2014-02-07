@@ -126,8 +126,8 @@ public class LibraryService extends Service<LibraryConfiguration> {
 
         // Set the swagger config options
         SwaggerConfig config = ConfigFactory.config();
-        config.setApiVersion("1.0.1");
-        config.setBasePath("http://localhost:8000");
+        config.setApiVersion("1.0");
+        config.setBasePath("http://api.darklordpotter.net");
     }
 
     public static void main(String[] args) throws Exception {

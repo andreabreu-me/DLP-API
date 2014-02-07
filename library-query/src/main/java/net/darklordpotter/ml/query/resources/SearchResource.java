@@ -77,13 +77,21 @@ public class SearchResource {
     }
 
     @GET
-    @Path("/suggestions")
-    public String suggestions() {
-        PhraseSuggestionBuilder phraseSuggestionBuilder = new PhraseSuggestionBuilder("title_typeahead");
-        phraseSuggestionBuilder.field("title");
-        phraseSuggestionBuilder.text("hogwart");
+    @Path("/updates")
+    public SearchResult updatesSince(@QueryParam("since") DateParam dateParam,
+                                              @QueryParam("from") @DefaultValue("0") int from,
+                                              @QueryParam("max") @DefaultValue("50") int max) {
+        SearchRequestBuilder search = client.prepareSearch("ffn_index")
+                .addSort("updated", SortOrder.DESC)
+                .setFrom(from)
+                .setSize(max);
 
-        return client.prepareSuggest("ffn_index").addSuggestion(phraseSuggestionBuilder).get().getSuggest().toString();
+        if (dateParam != null) {
+            search.setFilter(FilterBuilders.rangeFilter("updated").gte(dateParam.get()));
+        }
+
+        SearchResponse response = search.get();
+        return SearchResult.fromResult(threadLinkSupplier, response);
     }
 
 

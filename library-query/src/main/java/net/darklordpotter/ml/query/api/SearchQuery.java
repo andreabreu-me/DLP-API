@@ -4,7 +4,6 @@ import com.google.common.collect.Lists;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Getter;
-import lombok.Setter;
 import org.elasticsearch.index.query.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,7 +44,6 @@ public class SearchQuery {
 
     String title, author, summary;
     Integer wordcountLower;
-
     Integer wordcountUpper;
 
     List<String> rating = Collections.emptyList();
@@ -65,9 +63,9 @@ public class SearchQuery {
     public QueryBuilder toQueryBuilder() {
         BoolQueryBuilder query = QueryBuilders.boolQuery();
 
-        match(query, "title", title);
-        match(query, "author", author);
-        match(query, "summary", summary);
+        queryString(query, "title", title);
+        queryString(query, "author", author);
+        queryString(query, "summary", summary);
         range(query, "meta.words", wordcountLower, wordcountUpper);
 
         List<FilterBuilder> filterBuilders = Lists.newArrayList();
@@ -93,9 +91,9 @@ public class SearchQuery {
         return filteredQuery;
     }
 
-    private void match(BoolQueryBuilder query, String field, String value) {
+    private void queryString(BoolQueryBuilder query, String field, String value) {
         if (!isNullOrEmpty(value)) {
-            query.must(QueryBuilders.matchQuery(field, value));
+            query.must(QueryBuilders.queryString(value).field(field));
         }
     }
 
