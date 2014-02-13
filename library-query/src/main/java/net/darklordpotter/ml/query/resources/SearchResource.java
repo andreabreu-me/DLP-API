@@ -5,6 +5,7 @@ import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.common.base.Supplier;
 import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import net.darklordpotter.ml.query.Constants;
@@ -29,7 +30,9 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nullable;
 import javax.ws.rs.*;
+import javax.ws.rs.core.Response;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -59,7 +62,9 @@ public class SearchResource {
     @Path("/{id: [0-9,]+}")
     public Iterable<StoryHeader> getById(@PathParam("id") String id) {
         if (id.contains(",")) {
-            Iterable<String> ids = commaSplitter.split(id);
+            List<String> ids = Lists.newArrayList(commaSplitter.split(id));
+
+            if (ids.size() > 100) ids = ids.subList(0, 99);
 
             return Iterables.transform(
                     client.prepareMultiGet().add("ffn_index", "story", ids).get(),
@@ -81,6 +86,8 @@ public class SearchResource {
     public SearchResult updatesSince(@QueryParam("since") DateParam dateParam,
                                               @QueryParam("from") @DefaultValue("0") int from,
                                               @QueryParam("max") @DefaultValue("50") int max) {
+        if (max > 250) max = 250;
+
         SearchRequestBuilder search = client.prepareSearch("ffn_index")
                 .addSort("updated", SortOrder.DESC)
                 .setFrom(from)
@@ -104,6 +111,8 @@ public class SearchResource {
                                 SearchQuery query,
                                 @QueryParam("from") @DefaultValue("0") int from,
                                 @QueryParam("max") @DefaultValue("50") int max) {
+        if (max > 250) max = 250;
+
         SearchRequestBuilder searchRequestBuilder = client.prepareSearch("ffn_index")
                 .setTypes("story")
                 .setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
