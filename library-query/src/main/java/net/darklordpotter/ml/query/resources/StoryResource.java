@@ -2,6 +2,7 @@ package net.darklordpotter.ml.query.resources;
 
 import com.google.common.base.Function;
 import com.google.common.base.Splitter;
+import com.google.common.base.Supplier;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.mongodb.BasicDBObject;
@@ -16,6 +17,8 @@ import lombok.Data;
 import net.darklordpotter.ml.core.Story;
 import net.darklordpotter.ml.query.Constants;
 import net.darklordpotter.ml.query.api.ThreadRating;
+import net.darklordpotter.ml.query.api.ffdb.ThreadData;
+import net.darklordpotter.ml.query.core.StoryToThreadDataManager;
 import net.darklordpotter.ml.query.jdbi.ThreadRatingDao;
 import net.vz.mongodb.jackson.DBCursor;
 import net.vz.mongodb.jackson.DBQuery;
@@ -33,6 +36,7 @@ import javax.ws.rs.core.Response;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 /**
@@ -49,12 +53,14 @@ public class StoryResource {
     private final JacksonDBCollection<Story, String> jacksonDBCollection;
     private final Logger log = LoggerFactory.getLogger(StoryResource.class);
     private final SearchResource searchResource;
+    private final Supplier<Map<Long, ThreadData>> threadLinkSupplier;
 
     public StoryResource(final DBCollection libraryCollection, final ThreadRatingDao ratingDao, SearchResource searchResource) {
         this.libraryCollection = libraryCollection;
         this.ratingDao = ratingDao;
         this.searchResource = searchResource;
         this.jacksonDBCollection = JacksonDBCollection.wrap(libraryCollection, Story.class, String.class);
+        this.threadLinkSupplier = StoryToThreadDataManager.threadLinkSupplier();
     }
 
     @ApiOperation("Queries a sorted list of stories")
@@ -350,5 +356,11 @@ public class StoryResource {
 
     protected int translateSortToInt(String sortDirection) {
         return sortDirection != null && sortDirection.equals("DESC") ? -1 : 1;
+    }
+
+    @GET
+    @Path("/threadRelationships")
+    public Map<Long, ThreadData> getThreadRelationships() {
+        return threadLinkSupplier.get();
     }
 }
