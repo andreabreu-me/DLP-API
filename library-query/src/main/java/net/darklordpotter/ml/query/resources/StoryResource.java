@@ -5,6 +5,7 @@ import com.google.common.base.Splitter;
 import com.google.common.base.Supplier;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
@@ -359,8 +360,13 @@ public class StoryResource {
     }
 
     @GET
-    @Path("/threadRelationships")
-    public Map<Long, ThreadData> getThreadRelationships() {
-        return threadLinkSupplier.get();
+    @Path("/ratings")
+    public Map<Long, Double> getThreadRelationships() {
+        return Maps.transformEntries(threadLinkSupplier.get(), new Maps.EntryTransformer<Long, ThreadData, Double>() {
+            @Override
+            public Double transformEntry(Long key, ThreadData value) {
+                return (double)value.getVotenum()/value.getVotetotal();
+            }
+        });
     }
 }
