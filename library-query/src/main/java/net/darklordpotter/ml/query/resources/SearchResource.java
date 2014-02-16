@@ -116,12 +116,20 @@ public class SearchResource {
         SearchRequestBuilder searchRequestBuilder = client.prepareSearch("ffn_index")
                 .setTypes("story")
                 .setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
-                .setQuery(query.toQueryBuilder())
+                .setQuery(query.toQueryBuilder(threadLinkSupplier.get()))
                 .setFrom(from)
                 .setSize(max);
 
         if (!Strings.isNullOrEmpty(query.getSortBy()) && query.getSortBy().equalsIgnoreCase("_score")) {
             searchRequestBuilder.addSort(SortBuilders.scoreSort());
+        } else if (query.getSortBy().equalsIgnoreCase("_dlp")) {
+            String orderBy = query.getOrderBy();
+            searchRequestBuilder.addSort(
+                    SortBuilders
+                            .scriptSort("dlp-score", "number")
+                            .lang("native")
+                            .order(SortOrder.valueOf(orderBy.toUpperCase()))
+                    );
         } else {
             String orderBy = query.getOrderBy();
             if (Strings.isNullOrEmpty(orderBy) || (!orderBy.toLowerCase().equals("asc") && !orderBy.toLowerCase().equals("desc"))) orderBy = "ASC";

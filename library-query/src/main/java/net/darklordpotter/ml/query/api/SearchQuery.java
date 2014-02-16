@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Getter;
+import net.darklordpotter.ml.query.api.ffdb.ThreadData;
 import org.elasticsearch.index.query.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
 
@@ -60,7 +62,7 @@ public class SearchQuery {
     String language;
     String sortBy, orderBy;
 
-    public QueryBuilder toQueryBuilder() {
+    public QueryBuilder toQueryBuilder(Map<Long, ThreadData> dlpThreadLinks) {
         BoolQueryBuilder query = QueryBuilders.boolQuery();
 
         queryString(query, "title", title);
@@ -75,6 +77,10 @@ public class SearchQuery {
         filterBuilders.add(filter("meta.categories.category_id", categoryOptional, false, categoryOptionalExclude));
         filterBuilders.add(filter("meta.language", language.toLowerCase(), false));
         filterBuilders.add(filter("meta.rated", rating, false, false));
+
+        if (sortBy.equalsIgnoreCase("_dlp")) {
+            filterBuilders.add(filter("_id", dlpThreadLinks.keySet(), false, false));
+        }
 
         List<FilterBuilder> nonNullFilters = Lists.newArrayList();
         for (FilterBuilder filterBuilder : filterBuilders) {

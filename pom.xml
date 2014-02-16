@@ -12,6 +12,7 @@
         <module>library-core</module>
         <module>library-extractor</module>
         <module>library-query</module>
+        <module>dlp-scoring-plugin</module>
     </modules>
 
     <developers>
