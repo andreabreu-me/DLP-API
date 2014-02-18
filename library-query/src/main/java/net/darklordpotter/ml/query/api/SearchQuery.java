@@ -54,6 +54,8 @@ public class SearchQuery {
     String title, author, summary;
     Integer wordcountLower;
     Integer wordcountUpper;
+    Integer chaptersLower;
+    Integer chaptersUpper;
 
     List<String> rating = Collections.emptyList();
     List<Integer> categoryRequired = Collections.emptyList();
@@ -98,6 +100,7 @@ public class SearchQuery {
         queryString(query, "author", author);
         queryString(query, "summary", summary);
         range(query, "meta.words", wordcountLower, wordcountUpper);
+        range(query, "meta.chapters", chaptersLower, chaptersUpper);
 
         List<FilterBuilder> filterBuilders = Lists.newArrayList();
         filterBuilders.add(filter("meta.characters.character_id", characterRequired, true, false));
