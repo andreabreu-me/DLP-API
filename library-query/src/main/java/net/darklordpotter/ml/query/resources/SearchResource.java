@@ -15,7 +15,9 @@ import net.darklordpotter.ml.query.api.ffdb.SearchResult;
 import net.darklordpotter.ml.query.api.ffdb.StoryHeader;
 import net.darklordpotter.ml.query.core.DateParam;
 import net.darklordpotter.ml.query.core.StoryToThreadDataManager;
+import org.elasticsearch.action.ListenableActionFuture;
 import org.elasticsearch.action.get.MultiGetItemResponse;
+import org.elasticsearch.action.search.SearchPhaseExecutionException;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
@@ -25,6 +27,7 @@ import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
 import org.elasticsearch.search.suggest.phrase.PhraseSuggestionBuilder;
+import org.elasticsearch.transport.TransportSerializationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -120,24 +123,27 @@ public class SearchResource {
                 .setFrom(from)
                 .setSize(max);
 
-        if (!Strings.isNullOrEmpty(query.getSortBy()) && query.getSortBy().equalsIgnoreCase("_score")) {
-            searchRequestBuilder.addSort(SortBuilders.scoreSort());
-        } else if (query.getSortBy().equalsIgnoreCase("_dlp")) {
-            String orderBy = query.getOrderBy();
-            searchRequestBuilder.addSort(
-                    SortBuilders
-                            .scriptSort("dlp-score", "number")
-                            .lang("native")
-                            .order(SortOrder.valueOf(orderBy.toUpperCase()))
-                    );
-        } else {
-            String orderBy = query.getOrderBy();
-            if (Strings.isNullOrEmpty(orderBy) || (!orderBy.toLowerCase().equals("asc") && !orderBy.toLowerCase().equals("desc"))) orderBy = "ASC";
-            searchRequestBuilder.addSort(query.getSortBy(), SortOrder.valueOf(orderBy.toUpperCase()));
-            searchRequestBuilder.addSort(SortBuilders.scoreSort());
+        if (query.getSortBy().equalsIgnoreCase("_popular")) {
+            searchRequestBuilder.setSearchType(SearchType.QUERY_THEN_FETCH);
         }
 
-        SearchResult result = SearchResult.fromResult(threadLinkSupplier, searchRequestBuilder.get());
+        query.addSort(searchRequestBuilder);
+
+        SearchResponse response = null;
+        try {
+            response = searchRequestBuilder.get();
+        } catch (SearchPhaseExecutionException e) {
+
+        } catch (TransportSerializationException tse) {
+            log.error("Wat" + tse.getMessage());
+        } catch (Exception e) {
+            log.error("Error searching!", e);
+        }
+
+        SearchResult result = SearchResult.fromResult(threadLinkSupplier, response);
+//
+//        if (true)
+//            throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST).entity(result).build());
         log.info("Query: {}", query);
         log.info("Query Results: {} hits, {} max score, completed in {} ms", result.getHits(), result.getMaxScore(), result.getTook());
 

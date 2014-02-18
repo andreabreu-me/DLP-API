@@ -21,19 +21,31 @@ public class SearchResult {
     long took;
     long hits;
     double maxScore;
+    String reason;
 
     List<StoryHeader> results = Lists.newArrayList();
 
     public static SearchResult fromResult(Supplier<Map<Long,ThreadData>> threadLinkSupplier, SearchResponse response) {
+//        System.out.println(response);
         SearchResult result = new SearchResult();
-        result.took = response.getTookInMillis();
-        result.hits = response.getHits().totalHits();
-        result.maxScore = response.getHits().maxScore();
 
-        for (SearchHit hit : response.getHits().hits()) {
-            StoryHeader header = StoryHeader.fromSource(hit);
-            header.getMeta().setThreadData(threadLinkSupplier.get().get(header.getStoryId()));
-            result.results.add(header);
+        if (response != null) {
+            result.took = response.getTookInMillis();
+
+            if (response.getHits() != null) {
+                result.hits = response.getHits().totalHits();
+                result.maxScore = response.getHits().maxScore();
+            }
+
+            if (response.getFailedShards() > 0) {
+                result.reason = response.getShardFailures()[0].reason();
+            }
+
+            for (SearchHit hit : response.getHits().hits()) {
+                StoryHeader header = StoryHeader.fromSource(hit);
+                header.getMeta().setThreadData(threadLinkSupplier.get().get(header.getStoryId()));
+                result.results.add(header);
+            }
         }
 
         return result;
