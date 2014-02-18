@@ -1,11 +1,18 @@
 package net.darklordpotter.ml.query.api;
 
+import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Getter;
 import net.darklordpotter.ml.query.api.ffdb.ThreadData;
+import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.index.query.*;
+import org.elasticsearch.index.query.functionscore.FunctionScoreQueryBuilder;
+import org.elasticsearch.index.query.functionscore.ScoreFunctionBuilders;
+import org.elasticsearch.search.sort.SortBuilder;
+import org.elasticsearch.search.sort.SortBuilders;
+import org.elasticsearch.search.sort.SortOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,6 +68,28 @@ public class SearchQuery {
     boolean characterOptionalExclude;
     String language;
     String sortBy, orderBy;
+    
+    public void addSort(SearchRequestBuilder searchRequestBuilder) {
+
+
+        if (!Strings.isNullOrEmpty(sortBy) && sortBy.equalsIgnoreCase("_score")) {
+            searchRequestBuilder.addSort(SortBuilders.scoreSort());
+        } else if (sortBy.equalsIgnoreCase("_dlp")) {
+            searchRequestBuilder.addSort(
+                    SortBuilders
+                            .scriptSort("dlp-score", "number")
+                            .lang("native")
+                            .order(SortOrder.valueOf(orderBy.toUpperCase()))
+            );
+        } else if (sortBy.equalsIgnoreCase("_popular")) {
+            searchRequestBuilder.addSort(SortBuilders.scoreSort());
+        } else {
+            if (Strings.isNullOrEmpty(orderBy) || (!orderBy.toLowerCase().equals("asc") && !orderBy.toLowerCase().equals("desc"))) orderBy = "ASC";
+            searchRequestBuilder.addSort(sortBy, SortOrder.valueOf(orderBy.toUpperCase()));
+            searchRequestBuilder.addSort(SortBuilders.scoreSort());
+        }
+
+    }
 
     public QueryBuilder toQueryBuilder(Map<Long, ThreadData> dlpThreadLinks) {
         BoolQueryBuilder query = QueryBuilders.boolQuery();
@@ -76,10 +105,15 @@ public class SearchQuery {
         filterBuilders.add(filter("meta.categories.category_id", categoryRequired, true, false));
         filterBuilders.add(filter("meta.categories.category_id", categoryOptional, false, categoryOptionalExclude));
         filterBuilders.add(filter("meta.language", language.toLowerCase(), false));
-        filterBuilders.add(filter("meta.rated", rating, false, false));
+
+        if (rating.size() < 4)
+            filterBuilders.add(filter("meta.rated", rating, false, false));
 
         if (sortBy.equalsIgnoreCase("_dlp")) {
             filterBuilders.add(filter("_id", dlpThreadLinks.keySet(), false, false));
+//            return QueryBuilders.functionScoreQuery(filter("_id", dlpThreadLinks.keySet(), false, false),
+//                    ScoreFunctionBuilders.scriptFunction("dlp-score", "native")
+//            );
         }
 
         List<FilterBuilder> nonNullFilters = Lists.newArrayList();
