@@ -150,7 +150,7 @@ public class SearchQuery {
 
     private void queryString(BoolQueryBuilder query, String field, String value) {
         if (!isNullOrEmpty(value)) {
-            query.must(QueryBuilders.queryString(value).field(field));
+            query.must(QueryBuilders.queryString(value.replace("/", "\\/")).field(field));
         }
     }
 
