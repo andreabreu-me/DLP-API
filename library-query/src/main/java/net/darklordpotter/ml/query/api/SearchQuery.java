@@ -123,10 +123,27 @@ public class SearchQuery {
             }
         }
 
+
         FilteredQueryBuilder filteredQuery = QueryBuilders.filteredQuery(
                 query,
                 FilterBuilders.andFilter((FilterBuilder[]) nonNullFilters.toArray(new FilterBuilder[0]))
         );
+
+
+        if (sortBy.equalsIgnoreCase("_popular")) {
+            FunctionScoreQueryBuilder builder = QueryBuilders.functionScoreQuery(filteredQuery);
+            builder.add(ScoreFunctionBuilders.scriptFunction("_score + (" +
+                    "(doc['meta.follows'].empty ? 0 : doc['meta.follows'].value) + " +
+                    "(doc['meta.favs'].empty ? 0 : doc['meta.favs'].value) + " +
+                    "(doc['meta.reviews'].empty ? 0 : doc['meta.reviews'].value)" +
+                    ") / pow(max(1,doc['meta.chapters'].value), 0.5)"));
+            builder.add(ScoreFunctionBuilders.scriptFunction("1/((time() - doc['updated'].value)/1000/86400/30)"));
+//            builder.add(ScoreFunctionBuilders.scriptFunction("activity", "native"));
+//            builder.add(ScoreFunctionBuilders.scriptFunction("freshness", "native"));
+
+            return builder;
+        }
+
 
         return filteredQuery;
     }
