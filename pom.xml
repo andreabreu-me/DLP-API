@@ -13,6 +13,7 @@
         <module>library-extractor</module>
         <module>library-query</module>
         <module>dlp-scoring-plugin</module>
+        <module>fiction-api</module>
     </modules>
 
     <developers>
