@@ -5,7 +5,7 @@ import net.darklordpotter.api.fiction.core.{SearchResult, SearchQuery, StoryHead
 
 /**
  * 2014-03-19
- * @author Michael Rose <michael@fullcontact.com>
+ * @author Michael Rose
  */
 
 trait Searcher {

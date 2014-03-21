@@ -6,7 +6,7 @@ import net.darklordpotter.ml.new_extraction.ExtractionAction
 
 /**
  * 2013-08-14
- * @author Michael Rose <michael@fullcontact.com>
+ * @author Michael Rose
  */
 class SummaryExtractor extends ExtractionAction {
   val regex = "Summary:(.*)".r

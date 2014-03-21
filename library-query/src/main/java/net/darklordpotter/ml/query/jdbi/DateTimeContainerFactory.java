@@ -9,7 +9,7 @@ import java.util.Date;
 /**
  * 2013-11-15
  *
- * @author Michael Rose <michael@fullcontact.com>
+ * @author Michael Rose
  */
 public class DateTimeContainerFactory implements ContainerFactory<DateTime> {
     @Override

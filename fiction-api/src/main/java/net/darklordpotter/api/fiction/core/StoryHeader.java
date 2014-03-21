@@ -16,7 +16,7 @@ import java.util.Map;
 /**
  * 2013-12-23
  *
- * @author Michael Rose <michael@fullcontact.com>
+ * @author Michael Rose
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class StoryHeader {

@@ -6,7 +6,7 @@ import net.darklordpotter.ml.extraction.ExtractionContext
 
 /**
  * 2013-12-30
- * @author Michael Rose <michael@fullcontact.com>
+ * @author Michael Rose
  */
 class ElasticSearchEnrichmentFilter implements DataFilter {
     @Override

@@ -6,7 +6,7 @@ import net.darklordpotter.ml.new_extraction.ExtractionAction
 
 /**
  * 2013-08-14
- * @author Michael Rose <michael@fullcontact.com>
+ * @author Michael Rose
  */
 class TitleExtractor extends ExtractionAction {
   val regex = "Title:(.*)".r

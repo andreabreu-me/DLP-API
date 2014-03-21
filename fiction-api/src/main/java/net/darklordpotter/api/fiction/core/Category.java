@@ -3,7 +3,7 @@ package net.darklordpotter.api.fiction.core;
 /**
  * 2013-12-23
  *
- * @author Michael Rose <michael@fullcontact.com>
+ * @author Michael Rose
  */
 public class Category {
     long categoryId;

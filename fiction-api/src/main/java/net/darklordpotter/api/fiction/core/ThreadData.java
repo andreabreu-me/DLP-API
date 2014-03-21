@@ -3,7 +3,7 @@
 ///**
 // * 2014-02-05
 // *
-// * @author Michael Rose <michael@fullcontact.com>
+// * @author Michael Rose
 // */
 //public class ThreadData {
 //    long ffnId;

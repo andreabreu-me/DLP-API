@@ -8,7 +8,7 @@ import java.util.Set;
 /**
  * 2014-03-19
  *
- * @author Michael Rose <michael@fullcontact.com>
+ * @author Michael Rose
  */
 public class ThreadLinker {
     private final Supplier<Map<Long,ThreadData>> threadLinkSupplier;

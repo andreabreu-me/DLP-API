@@ -5,7 +5,7 @@ import org.scalatest.FunSuite;
 /**
  * 2013-08-24
  *
- * @author Michael Rose <michael@fullcontact.com>
+ * @author Michael Rose
  */
 class TitleExtractorTest extends FunSuite {
   val titleExtractor = new TitleExtractor

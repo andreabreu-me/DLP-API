@@ -5,7 +5,7 @@ import com.twitter.util.Promise
 
 /**
  * 2014-03-18
- * @author Michael Rose <michael@fullcontact.com>
+ * @author Michael Rose
  */
 
 object ElasticSearch {

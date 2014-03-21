@@ -13,7 +13,7 @@ import javax.ws.rs.core.MediaType;
 /**
  * 2013-11-29
  *
- * @author Michael Rose <michael@fullcontact.com>
+ * @author Michael Rose
  */
 @Produces(MediaType.APPLICATION_JSON)
 @Path("/v1/ratings")

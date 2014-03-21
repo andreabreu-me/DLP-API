@@ -8,7 +8,7 @@
 ///**
 // * 2013-12-23
 // *
-// * @author Michael Rose <michael@fullcontact.com>
+// * @author Michael Rose
 // */
 //@JsonIgnoreProperties(ignoreUnknown = true)
 //public class StoryMeta {

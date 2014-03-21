@@ -7,7 +7,7 @@ import net.darklordpotter.ml.new_extraction.utils.Levenshtein
 
 /**
  * 2013-08-14
- * @author Michael Rose <michael@fullcontact.com>
+ * @author Michael Rose
  */
 class AuthorExtractor extends ExtractionAction {
   val regex = "Author:((.*))".r

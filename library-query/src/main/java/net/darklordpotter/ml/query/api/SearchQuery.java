@@ -44,7 +44,7 @@ import static com.google.common.base.Strings.isNullOrEmpty;
  order_by: $scope.order_by
 
  *
- * @author Michael Rose <michael@fullcontact.com>
+ * @author Michael Rose
  */
 @Data
 public class SearchQuery {

@@ -7,7 +7,7 @@ import java.nio.charset.Charset
 
 /**
  * 2013-08-19
- * @author Michael Rose <michael@fullcontact.com>
+ * @author Michael Rose
  */
 class UrlDecoderFilter extends ExtractionAction {
   def apply(ctx: ExtractionContext) {

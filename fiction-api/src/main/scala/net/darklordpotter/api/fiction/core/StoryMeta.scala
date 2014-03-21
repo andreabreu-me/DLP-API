@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
 /**
  * 2014-03-19
- * @author Michael Rose <michael@fullcontact.com>
+ * @author Michael Rose
  */
 
 /*

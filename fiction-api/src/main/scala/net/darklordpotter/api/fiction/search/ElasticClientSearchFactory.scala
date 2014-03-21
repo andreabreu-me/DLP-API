@@ -6,7 +6,7 @@ import org.elasticsearch.common.transport.InetSocketTransportAddress
 
 /**
  * 2014-03-19
- * @author Michael Rose <michael@fullcontact.com>
+ * @author Michael Rose
  */
 object ElasticClientSearchFactory {
   def clientFromHost(host: String): Client = {

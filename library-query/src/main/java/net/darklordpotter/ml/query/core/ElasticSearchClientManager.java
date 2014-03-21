@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * 2013-12-23
  *
- * @author Michael Rose <michael@fullcontact.com>
+ * @author Michael Rose
  */
 public class ElasticSearchClientManager implements Managed {
     private Client client = null;

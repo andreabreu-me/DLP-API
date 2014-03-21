@@ -6,7 +6,7 @@ import scala.util.matching.Regex
 
 /**
  * 2013-08-14
- * @author Michael Rose <michael@fullcontact.com>
+ * @author Michael Rose
  */
 trait ExtractionAction {
   def apply(ctx: ExtractionContext)

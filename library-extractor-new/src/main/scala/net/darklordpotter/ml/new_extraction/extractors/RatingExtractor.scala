@@ -6,7 +6,7 @@ import net.darklordpotter.ml.new_extraction.ExtractionAction
 
 /**
  * 2013-08-14
- * @author Michael Rose <michael@fullcontact.com>
+ * @author Michael Rose
  */
 class RatingExtractor extends ExtractionAction {
   val regex = "Rating:\\s?([a-zA-Z\\-+0-9]+)".r

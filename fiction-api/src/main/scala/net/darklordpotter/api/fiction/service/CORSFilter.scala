@@ -5,7 +5,7 @@ import com.twitter.finagle.http.{Response, Request}
 
 /**
  * 2014-03-19
- * @author Michael Rose <michael@fullcontact.com>
+ * @author Michael Rose
  */
 
 class CORSFilter extends SimpleFilter[Request, Response] {

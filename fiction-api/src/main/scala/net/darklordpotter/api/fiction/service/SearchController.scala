@@ -8,7 +8,7 @@ import net.darklordpotter.api.fiction.core.{StoryToThreadDataManager, ThreadLink
 
 /**
  * 2014-03-19
- * @author Michael Rose <michael@fullcontact.com>
+ * @author Michael Rose
  */
 class SearchController(client: Client) extends Controller {
   val mapper = new ObjectMapper()

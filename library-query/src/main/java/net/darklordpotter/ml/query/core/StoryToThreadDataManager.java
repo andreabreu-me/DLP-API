@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * 2014-02-04
  *
- * @author Michael Rose <michael@fullcontact.com>
+ * @author Michael Rose
  */
 public class StoryToThreadDataManager {
     public static Supplier<Map<Long, ThreadData>> threadLinkSupplier() {

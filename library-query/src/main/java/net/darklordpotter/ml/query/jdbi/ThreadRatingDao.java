@@ -3,7 +3,7 @@ package net.darklordpotter.ml.query.jdbi;
 /**
  * 2013-11-29
  *
- * @author Michael Rose <michael@fullcontact.com>
+ * @author Michael Rose
  */
 
 import com.google.common.collect.ImmutableList;

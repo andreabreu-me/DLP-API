@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * 2013-12-23
  *
- * @author Michael Rose <michael@fullcontact.com>
+ * @author Michael Rose
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Data

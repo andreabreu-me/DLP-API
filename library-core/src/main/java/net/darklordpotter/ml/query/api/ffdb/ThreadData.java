@@ -5,7 +5,7 @@ import lombok.Data;
 /**
  * 2014-02-05
  *
- * @author Michael Rose <michael@fullcontact.com>
+ * @author Michael Rose
  */
 @Data
 public class ThreadData {

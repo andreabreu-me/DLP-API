@@ -5,7 +5,7 @@ import lombok.Data;
 /**
  * 2013-12-23
  *
- * @author Michael Rose <michael@fullcontact.com>
+ * @author Michael Rose
  */
 @Data
 public class Category {

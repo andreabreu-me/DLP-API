@@ -2,7 +2,7 @@ package net.darklordpotter.api.fiction.core
 
 /**
  * 2014-03-19
- * @author Michael Rose <michael@fullcontact.com>
+ * @author Michael Rose
  */
 /*
     long ffnId;
