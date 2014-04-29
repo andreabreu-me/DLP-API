@@ -16,15 +16,21 @@ import com.wordnik.swagger.reader.ClassReaders;
 import com.yammer.dropwizard.Service;
 import com.yammer.dropwizard.auth.CachingAuthenticator;
 import com.yammer.dropwizard.auth.basic.BasicAuthProvider;
+import com.yammer.dropwizard.bundles.ScalaBundle;
 import com.yammer.dropwizard.config.Bootstrap;
 import com.yammer.dropwizard.config.Environment;
 import com.yammer.dropwizard.jdbi.DBIFactory;
+import net.darklordpotter.api.fiction.core.StoryToThreadDataManager;
+import net.darklordpotter.api.fiction.core.ThreadLinker;
+import net.darklordpotter.api.fiction.search.ScryerSearcher;
+import net.darklordpotter.api.fiction.search.Searcher;
 import net.darklordpotter.ml.core.Story;
 import net.darklordpotter.ml.query.core.DlpAuthenticator;
 import net.darklordpotter.ml.query.core.ElasticSearchClientManager;
 import net.darklordpotter.ml.query.core.MongoClientManager;
 import net.darklordpotter.ml.query.healthcheck.MongoHealthCheck;
 import net.darklordpotter.ml.query.jdbi.*;
+import net.darklordpotter.api.fiction.SearchResource;
 import net.darklordpotter.ml.query.resources.*;
 import net.vz.mongodb.jackson.JacksonDBCollection;
 import org.skife.jdbi.v2.DBI;
@@ -47,6 +53,7 @@ public class LibraryService extends Service<LibraryConfiguration> {
 //                        .enableAutoConfig()
 //                .build()
 //        );
+        bootstrap.addBundle(new ScalaBundle());
     }
 
     @Override
@@ -105,8 +112,14 @@ public class LibraryService extends Service<LibraryConfiguration> {
         environment.addResource(new ForumResource(forumDAO, threadDAO));
         environment.addResource(new SubscriptionResource(subscriptionDAO));
 
-        // FFDB API
-        SearchResource searchResource = new SearchResource(searchClientManager.getClient());
+//        // FFDB API
+//        App.main();
+
+
+//        environment.addFilter(new SearchPlan(searchClientManager.getClient()), "/*");
+        Searcher searcher = new ScryerSearcher(searchClientManager.getClient(), new ThreadLinker(
+                StoryToThreadDataManager.threadLinkSupplier()));
+        SearchResource searchResource = new SearchResource(searcher);
         environment.addResource(searchResource);
         environment.addResource(new StoryResource(collection, threadRatingDao, null));
 

@@ -5,25 +5,26 @@ import org.elasticsearch.client.Client
 import org.elasticsearch.action.search.SearchType
 import ElasticSearch._
 import scala.collection.JavaConverters._
-import com.twitter.util.Future
+import rx.lang.scala._
+import org.joda.time.DateTime
 
 class ScryerSearcher(client: Client, threadLinker: ThreadLinker) extends Searcher {
-  def fetch(ids: Seq[String]):Future[Iterable[StoryHeader]] = {
+  override def fetch(ids: Seq[String]):Observable[StoryHeader] = {
     val esFuture = client
       .prepareMultiGet()
       .add("ffn_index", "story", ids.asJava)
       .execute()
+      .toObservable
 
-    esFuture.toPromise map { multiGetResponse =>
-      multiGetResponse.iterator().asScala.map(_.getResponse.getSource).toIterable
-    } map { sources =>
-      sources.map { source =>
-        StoryHeader.fromSource(source)
-      }
-    }
+    esFuture
+      // Obs[Seq[T]] -> N*Obs[T] -> flatten
+      .flatMap { multiGetResponse => Observable.from(multiGetResponse.getResponses.map(_.getResponse.getSource)) }
+      .map(StoryHeader.fromSource)
   }
 
-  def query(query: SearchQuery, from: Long, max: Long):Future[SearchResult] =  {
+  override def updatesSince(date: Option[DateTime], from: Long, max: Long) = ???
+
+  override def query(query: SearchQuery, from: Long, max: Long):Observable[SearchResult] =  {
     val fictionQueryBuilder = new FictionSearchBuilder(query, threadLinker)
 
     val searchBuilder = client.prepareSearch("ffn_index")
@@ -39,8 +40,9 @@ class ScryerSearcher(client: Client, threadLinker: ThreadLinker) extends Searche
 
     fictionQueryBuilder.addSort(searchBuilder)
 
-    searchBuilder.execute().toPromise map {
+    searchBuilder.execute().toObservable.map {
       SearchResult.fromResult(_, threadLinker)
     }
   }
+
 }

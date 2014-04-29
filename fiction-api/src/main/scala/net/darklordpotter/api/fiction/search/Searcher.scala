@@ -1,7 +1,8 @@
 package net.darklordpotter.api.fiction.search
 
-import com.twitter.util.Future
 import net.darklordpotter.api.fiction.core.{SearchResult, SearchQuery, StoryHeader}
+import rx.lang.scala.Observable
+import org.joda.time.DateTime
 
 /**
  * 2014-03-19
@@ -9,6 +10,7 @@ import net.darklordpotter.api.fiction.core.{SearchResult, SearchQuery, StoryHead
  */
 
 trait Searcher {
-  def fetch(ids: Seq[String]):Future[Iterable[StoryHeader]]
-  def query(query: SearchQuery, from: Long, max: Long):Future[SearchResult]
+  def fetch(ids: Seq[String]):Observable[StoryHeader]
+  def updatesSince(date: Option[DateTime], from: Long, max: Long):Observable[SearchResult]
+  def query(query: SearchQuery, from: Long, max: Long):Observable[SearchResult]
 }

@@ -54,7 +54,7 @@ public class StoryHeader {
 
     public static StoryHeader fromSource(SearchHit hit) {
         StoryHeader header = fromSource(hit.getSource());
-        header.setScore(hit.score());
+        header.score = hit.score();
 
         return header;
     }
