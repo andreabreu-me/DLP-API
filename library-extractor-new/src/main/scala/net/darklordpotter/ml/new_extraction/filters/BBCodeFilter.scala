@@ -5,7 +5,7 @@ import net.darklordpotter.ml.new_extraction.LibraryExtractor.ExtractionContext
 
 /**
  * 2013-08-19
- * @author Michael Rose <michael@fullcontact.com>
+ * @author Michael Rose
  */
 class BBCodeFilter extends ExtractionAction {
   val bbcode = "\\[[^\\]]+\\]".r

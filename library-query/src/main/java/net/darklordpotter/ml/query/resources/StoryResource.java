@@ -15,6 +15,7 @@ import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.yammer.metrics.annotation.Metered;
 import lombok.Data;
+import net.darklordpotter.api.fiction.SearchResource;
 import net.darklordpotter.ml.core.Story;
 import net.darklordpotter.ml.query.Constants;
 import net.darklordpotter.ml.query.api.ThreadRating;
@@ -53,13 +54,13 @@ public class StoryResource {
     private final ThreadRatingDao ratingDao;
     private final JacksonDBCollection<Story, String> jacksonDBCollection;
     private final Logger log = LoggerFactory.getLogger(StoryResource.class);
-    private final SearchResource searchResource;
+//    private final SearchResource searchResource;
     private final Supplier<Map<Long, ThreadData>> threadLinkSupplier;
 
     public StoryResource(final DBCollection libraryCollection, final ThreadRatingDao ratingDao, SearchResource searchResource) {
         this.libraryCollection = libraryCollection;
         this.ratingDao = ratingDao;
-        this.searchResource = searchResource;
+//        this.searchResource = searchResource;
         this.jacksonDBCollection = JacksonDBCollection.wrap(libraryCollection, Story.class, String.class);
         this.threadLinkSupplier = StoryToThreadDataManager.threadLinkSupplier();
     }

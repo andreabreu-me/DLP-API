@@ -4,7 +4,7 @@ import org.joda.time.DateTime
 
 /**
  * 2014-02-03
- * @author Michael Rose <michael@fullcontact.com>
+ * @author Michael Rose
  */
 public class DLPMetaData {
     int posts;

@@ -4,7 +4,7 @@ import scala.collection.JavaConverters._
 
 /**
  * 2013-08-15
- * @author Michael Rose <michael@fullcontact.com>
+ * @author Michael Rose
  */
 object StoryRow {
 //  def fromLine(line: String) = {

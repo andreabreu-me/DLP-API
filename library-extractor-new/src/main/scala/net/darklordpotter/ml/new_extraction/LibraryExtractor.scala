@@ -12,7 +12,7 @@ import net.darklordpotter.ml.new_extraction.models.Title
 
 /**
  * 2013-08-14
- * @author Michael Rose <michael@fullcontact.com>
+ * @author Michael Rose
  */
 object LibraryExtractor extends App {
   case class ExtractionContext(story: StoryRow, elements: mutable.Set[StoryElement])

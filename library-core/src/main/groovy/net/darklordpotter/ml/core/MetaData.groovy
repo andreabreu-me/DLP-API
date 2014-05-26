@@ -2,7 +2,7 @@ package net.darklordpotter.ml.core
 
 /**
  * 2014-02-03
- * @author Michael Rose <michael@fullcontact.com>
+ * @author Michael Rose
  */
 class MetaData {
     FFNMetaData ffn;

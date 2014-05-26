@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * 2013-08-21
  *
- * @author Michael Rose <michael@fullcontact.com>
+ * @author Michael Rose
  */
 public interface SimilarityDAO {
     @SqlQuery("SELECT threadId2 FROM thread_similarity WHERE threadId = :threadId ORDER BY jaccardSimilarity DESC LIMIT 5")

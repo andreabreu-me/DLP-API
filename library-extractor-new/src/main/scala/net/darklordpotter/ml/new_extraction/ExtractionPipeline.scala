@@ -6,7 +6,7 @@ import net.darklordpotter.ml.new_extraction.models.StoryElement
 
 /**
  * 2013-08-14
- * @author Michael Rose <michael@fullcontact.com>
+ * @author Michael Rose
  */
 class ExtractionPipeline[T <: StoryElement] {
   val actions:ListBuffer[ExtractionAction] = ListBuffer()
