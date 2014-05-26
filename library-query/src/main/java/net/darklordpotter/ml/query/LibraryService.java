@@ -112,11 +112,7 @@ public class LibraryService extends Service<LibraryConfiguration> {
         environment.addResource(new ForumResource(forumDAO, threadDAO));
         environment.addResource(new SubscriptionResource(subscriptionDAO));
 
-//        // FFDB API
-//        App.main();
-
-
-//        environment.addFilter(new SearchPlan(searchClientManager.getClient()), "/*");
+        // FFDB API
         Searcher searcher = new ScryerSearcher(searchClientManager.getClient(), new ThreadLinker(
                 StoryToThreadDataManager.threadLinkSupplier()));
         SearchResource searchResource = new SearchResource(searcher);
