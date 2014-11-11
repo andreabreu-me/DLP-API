@@ -3,10 +3,8 @@ package net.darklordpotter.ml.query.api.ffdb;
 import com.google.common.base.Supplier;
 import com.google.common.collect.Lists;
 import lombok.Data;
-import net.darklordpotter.ml.core.DLPMetaData;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.search.SearchHit;
-import org.elasticsearch.search.facet.Facet;
 
 import java.util.List;
 import java.util.Map;

@@ -1,82 +1,83 @@
-package net.darklordpotter.ml.core
+package net.darklordpotter.ml.core;
 
-import org.joda.time.DateTime
+import org.joda.time.DateTime;
 
 /**
  * 2014-02-03
+ *
  * @author Michael Rose <michael@fullcontact.com>
  */
 public class FFNMetaData {
-    int reviews;
-    int favorites;
-    int follows;
-    int words;
-    int chapters;
-    String status = "";
-    DateTime published;
-    DateTime updated;
-
     public int getReviews() {
-        return reviews
+        return reviews;
     }
 
     public void setReviews(int reviews) {
-        this.reviews = reviews
+        this.reviews = reviews;
     }
 
     public int getFavorites() {
-        return favorites
+        return favorites;
     }
 
     public void setFavorites(int favorites) {
-        this.favorites = favorites
+        this.favorites = favorites;
     }
 
     public int getFollows() {
-        return follows
+        return follows;
     }
 
     public void setFollows(int follows) {
-        this.follows = follows
+        this.follows = follows;
     }
 
     public int getWords() {
-        return words
+        return words;
     }
 
     public void setWords(int words) {
-        this.words = words
+        this.words = words;
     }
 
     public int getChapters() {
-        return chapters
+        return chapters;
     }
 
     public void setChapters(int chapters) {
-        this.chapters = chapters
+        this.chapters = chapters;
     }
 
     public String getStatus() {
-        return status
+        return status;
     }
 
     public void setStatus(String status) {
-        this.status = status
+        this.status = status;
     }
 
     public DateTime getPublished() {
-        return published
+        return published;
     }
 
     public void setPublished(DateTime published) {
-        this.published = published
+        this.published = published;
     }
 
     public DateTime getUpdated() {
-        return updated
+        return updated;
     }
 
     public void setUpdated(DateTime updated) {
-        this.updated = updated
+        this.updated = updated;
     }
+
+    private int reviews;
+    private int favorites;
+    private int follows;
+    private int words;
+    private int chapters;
+    private String status = "";
+    private DateTime published;
+    private DateTime updated;
 }

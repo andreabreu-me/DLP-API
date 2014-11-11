@@ -11,6 +11,7 @@ import lombok.Getter;
 import org.elasticsearch.search.SearchHit;
 import org.joda.time.DateTime;
 
+import java.util.List;
 import java.util.Map;
 
 /**

@@ -1,10 +1,7 @@
 package net.darklordpotter.ml.query.api.ffdb;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonSetter;
 import lombok.Data;
-import net.darklordpotter.ml.core.DLPMetaData;
-import net.darklordpotter.ml.core.Rating;
 
 import java.util.Collections;
 import java.util.List;

@@ -1,8 +1,14 @@
-package net.darklordpotter.ml.core
+package net.darklordpotter.ml.core;
 
-import com.google.common.collect.Sets
+import com.google.common.collect.Sets;
+import net.darklordpotter.ml.query.api.ffdb.ESFandom;
+import net.darklordpotter.ml.query.api.ffdb.Fandom;
 
-import javax.persistence.Id
+import javax.persistence.Id;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
 
 public class Story {
     public Story(Long threadId) {
@@ -96,11 +102,19 @@ public class Story {
     }
 
     public MetaData getMeta() {
-        return meta
+        return meta;
     }
 
     public void setMeta(MetaData meta) {
-        this.meta = meta
+        this.meta = meta;
+    }
+
+    public List<ESFandom> getFandoms() {
+        return fandoms;
+    }
+
+    public void setFandoms(List<ESFandom> fandoms) {
+        this.fandoms = fandoms;
     }
 
     public Set<Url> getUrl() {
@@ -120,15 +134,15 @@ public class Story {
     }
 
     public Double getAdjustedThreadRating() {
-        return adjustedThreadRating
+        return adjustedThreadRating;
     }
 
     public void setAdjustedThreadRating(Double adjustedThreadRating) {
-        this.adjustedThreadRating = adjustedThreadRating
+        this.adjustedThreadRating = adjustedThreadRating;
     }
 
-    void setThreadIdLong(Long threadIdLong) {
-        this.threadIdLong = threadIdLong
+    public void setThreadIdLong(Long threadIdLong) {
+        this.threadIdLong = threadIdLong;
     }
 
     private Long threadId = 0l;
@@ -141,6 +155,7 @@ public class Story {
     private Double adjustedThreadRating = 0.0;
     private Date posted;
     private MetaData meta = new MetaData();
+    private List<ESFandom> fandoms = Collections.emptyList();
     private Set<Url> url = Sets.newHashSet();
     private Set<String> tags = Sets.newHashSet();
 }

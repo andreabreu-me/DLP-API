@@ -1,55 +1,56 @@
-package net.darklordpotter.ml.core
+package net.darklordpotter.ml.core;
 
-import org.joda.time.DateTime
+import org.joda.time.DateTime;
 
 /**
  * 2014-02-03
+ *
  * @author Michael Rose <michael@fullcontact.com>
  */
 public class DLPMetaData {
-    int posts;
-    int views;
-    DateTime posted;
-    DateTime lastPost;
-    String forum;
-
     public int getPosts() {
-        return posts
+        return posts;
     }
 
     public void setPosts(int posts) {
-        this.posts = posts
+        this.posts = posts;
     }
 
     public int getViews() {
-        return views
+        return views;
     }
 
     public void setViews(int views) {
-        this.views = views
+        this.views = views;
     }
 
     public DateTime getPosted() {
-        return posted
+        return posted;
     }
 
     public void setPosted(DateTime posted) {
-        this.posted = posted
+        this.posted = posted;
     }
 
     public DateTime getLastPost() {
-        return lastPost
+        return lastPost;
     }
 
     public void setLastPost(DateTime lastPost) {
-        this.lastPost = lastPost
+        this.lastPost = lastPost;
     }
 
     public String getForum() {
-        return forum
+        return forum;
     }
 
     public void setForum(String forum) {
-        this.forum = forum
+        this.forum = forum;
     }
+
+    private int posts;
+    private int views;
+    private DateTime posted;
+    private DateTime lastPost;
+    private String forum;
 }
