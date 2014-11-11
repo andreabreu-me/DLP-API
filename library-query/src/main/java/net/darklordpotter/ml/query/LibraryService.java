@@ -109,6 +109,8 @@ public class LibraryService extends Service<LibraryConfiguration> {
         SearchResource searchResource = new SearchResource(searchClientManager.getClient());
         environment.addResource(searchResource);
         environment.addResource(new StoryResource(collection, threadRatingDao, null));
+        environment.addResource(new CharacterResource(searchClientManager.getClient()));
+        environment.addResource(new FandomResource(searchClientManager.getClient()));
 
 
         // Swagger Resource
