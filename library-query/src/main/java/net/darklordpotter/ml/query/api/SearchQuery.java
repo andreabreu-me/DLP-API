@@ -16,10 +16,7 @@ import org.elasticsearch.search.sort.SortOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
 
@@ -65,12 +62,16 @@ public class SearchQuery {
     List<Integer> characterRequired = Collections.emptyList();
     List<Integer> characterOptional = Collections.emptyList();
 
+    Integer fandom = null;
+    Set<Integer> crossovers = Collections.emptySet();
+
 //    List<List<Integer>> pairings = Collections.emptyList();
 
     boolean characterOptionalExclude;
     String language;
+    String status;
     String sortBy, orderBy;
-    
+
     public void addSort(SearchRequestBuilder searchRequestBuilder) {
 
 
@@ -107,10 +108,32 @@ public class SearchQuery {
         filterBuilders.add(filter("meta.characters.character_id", characterOptional, false, characterOptionalExclude));
         filterBuilders.add(filter("meta.categories.category_id", categoryRequired, true, false));
         filterBuilders.add(filter("meta.categories.category_id", categoryOptional, false, categoryOptionalExclude));
-        filterBuilders.add(filter("meta.language", language.toLowerCase(), false));
 
-        if (rating.size() < 4)
-            filterBuilders.add(filter("meta.rated", rating, false, false));
+        if (!Strings.isNullOrEmpty(language)) {
+            filterBuilders.add(filter("meta.language", language.toLowerCase(), false));
+        }
+
+
+        if (!Strings.isNullOrEmpty(status)) {
+            if (status.equals("hiatus")) {
+                queryString(query, "summary", "hiatus");
+            } else {
+                filterBuilders.add(filter("meta.status", status.toLowerCase(), false));
+            }
+        }
+
+        if (fandom != null) {
+            filterBuilders.add(filter("fandoms.fandom_id", fandom, false));
+        }
+
+        if (crossovers.size() > 0) {
+            filterBuilders.add(filter("fandoms.fandom_id", crossovers, false, false));
+        }
+
+        if (rating.size() < 4) {
+           filterBuilders.add(filter("meta.rated", rating, false, false));
+        }
+
 
         if (sortBy.equalsIgnoreCase("_dlp")) {
             filterBuilders.add(filter("_id", dlpThreadLinks.keySet(), false, false));

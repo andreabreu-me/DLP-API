@@ -1,5 +1,7 @@
 package net.darklordpotter.ml.query.resources;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Function;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
@@ -103,13 +105,12 @@ public class SearchResource {
                 .setSize(max);
 
         if (dateParam != null) {
-            search.setFilter(FilterBuilders.rangeFilter("updated").gte(dateParam.get()));
+            search.setPostFilter(FilterBuilders.rangeFilter("updated").gte(dateParam.get()));
         }
 
         SearchResponse response = search.get();
         return SearchResult.fromResult(threadLinkSupplier, response);
     }
-
 
     @ApiOperation(
             value = "Search the story index for a given SearchQuery",
@@ -122,7 +123,13 @@ public class SearchResource {
                                 @QueryParam("max") @DefaultValue("50") int max) {
         if (max > 250) max = 250;
 
-        SearchRequestBuilder searchRequestBuilder = client.prepareSearch("ffn_index")
+        String[] index = new String[] {"ffn_index"};
+
+        if (!query.getCrossovers().isEmpty()) {
+            index = new String[] {"ffn_index", "ffncrossover_index"};
+        }
+
+        SearchRequestBuilder searchRequestBuilder = client.prepareSearch(index)
                 .setTypes("story")
                 .setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
                 .setQuery(query.toQueryBuilder(threadLinkSupplier.get()))
