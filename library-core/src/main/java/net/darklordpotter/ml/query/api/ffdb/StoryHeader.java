@@ -48,6 +48,7 @@ public class StoryHeader {
     DateTime updated;
 
     StoryMeta meta;
+    List<ESFandom> fandoms;
 
 
 
